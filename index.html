@@ -3,1043 +3,666 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Store by Bambu Lab and Beta Filament | Enterprise Hub v11.5</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>3D Store by Bambu Lab & Beta Filament | v15.0 Açık Tema</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ==========================================================================
-           1. MODERN CORPORATE DESIGN SYSTEM VARIABLES & ADVANCED ROOT ARCHITECTURE
-           ========================================================================== */
-        :root {
-            --bg-space-black: #020408;
-            --surface-primary: #070b12;
-            --surface-secondary: #0f1624;
-            --surface-tertiary: #172136;
-            --surface-quaternary: #202d4a;
-            --accent-blue: #2563eb;
-            --accent-blue-hover: #1d4ed8;
-            --accent-blue-glow: rgba(37, 99, 235, 0.35);
-            --accent-emerald: #10b981;
-            --accent-emerald-hover: #059669;
-            --accent-emerald-glow: rgba(16, 185, 129, 0.25);
-            --accent-amber: #f59e0b;
-            --accent-purple: #8b5cf6;
-            --accent-purple-hover: #7c3aed;
-            --accent-purple-glow: rgba(139, 92, 246, 0.25);
-            --text-pure: #ffffff;
-            --text-main: #e2e8f0;
-            --text-muted: #8898aa;
-            --text-darker: #4f5e71;
-            --border-glow: rgba(255, 255, 255, 0.03);
-            --motion-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            --radius-xl: 20px;
-            --radius-lg: 14px;
-            --radius-md: 8px;
-        }
-
-        /* ==========================================================================
-           2. BASE ARCHITECTURE & GLOBAL RESET ENGINE
-           ========================================================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-space-black);
-            color: var(--text-main);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        .ambient-glow-mesh {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: 
-                radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
-            z-index: -5;
-            pointer-events: none;
-        }
-
-        .technical-blueprint-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.004) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(255, 255, 255, 0.004) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -4;
-            pointer-events: none;
-        }
-
-        .app-container { max-width: 1440px; margin: 0 auto; padding: 0 2.5rem; }
-        .section-spacer { padding: 6.5rem 0; border-bottom: 1px solid var(--border-glow); }
-        
-        .section-title-block h2 { font-size: 2.6rem; font-weight: 800; color: var(--text-pure); letter-spacing: -0.5px; }
-        .section-title-block p { color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem; max-width: 700px; }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-space-black); }
-        ::-webkit-scrollbar-thumb { background: var(--surface-tertiary); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-darker); }
-
-        /* ==========================================================================
-           3. ENTERPRISE NAVIGATION HEADER
-           ========================================================================== */
-        .main-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(2, 4, 8, 0.85);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .nav-inner-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 0; }
-        .brand-logo-node { font-size: 1.5rem; font-weight: 900; text-decoration: none; color: var(--text-pure); display: flex; align-items: center; gap: 0.6rem; }
-        .brand-logo-node span { background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 50%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .nav-links-menu { display: flex; gap: 2.5rem; list-style: none; }
-        .nav-links-menu a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: var(--motion-smooth); position: relative; }
-        .nav-links-menu a:hover { color: var(--text-pure); }
-        .nav-links-menu a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -6px; left: 0; background: var(--accent-blue); transition: var(--motion-smooth); }
-        .nav-links-menu a:hover::after { width: 100%; }
-
-        .control-panel-widgets { display: flex; align-items: center; gap: 1.5rem; }
-        .cart-trigger-btn { background: var(--surface-secondary); border: 1px solid var(--border-glow); padding: 0.75rem 1.4rem; border-radius: 30px; color: var(--text-main); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: var(--motion-smooth); }
-        .cart-trigger-btn:hover { background: var(--surface-tertiary); border-color: var(--accent-blue); box-shadow: 0 0 15px var(--accent-blue-glow); }
-        .cart-counter-badge { background: var(--accent-emerald); color: white; font-size: 0.75rem; padding: 0.15rem 0.55rem; border-radius: 12px; font-weight: 800; }
-
-        .profile-identity-module { display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.01); padding: 0.4rem 1rem; border-radius: 40px; border: 1px solid var(--border-glow); }
-        .identity-meta { font-size: 0.8rem; color: var(--text-muted); text-align: right; }
-        .identity-meta span { display: block; color: var(--accent-blue); font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        
-        .avatar-frame { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--surface-tertiary); overflow: hidden; position: relative; cursor: pointer; background: var(--surface-secondary); }
-
-        /* ==========================================================================
-           4. HERO CONTROL STATION & ADVANCED VIEWPORT
-           ========================================================================== */
-        .hero-layout-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: center; }
-        .hero-text-block h1 { font-size: 4.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; color: var(--text-pure); letter-spacing: -1px; }
-        .hero-text-block h1 span { background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-text-block p { color: var(--text-muted); font-size: 1.25rem; margin-bottom: 3rem; max-width: 600px; }
-
-        .btn-group { display: flex; gap: 1.25rem; }
-        .btn-prime { background: var(--accent-blue); color: white; padding: 1.1rem 2.2rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; border: none; cursor: pointer; transition: var(--motion-smooth); display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; }
-        .btn-prime:hover { background: var(--accent-blue-hover); transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-blue-glow); }
-        .btn-sub { background: transparent; color: var(--text-pure); padding: 1.1rem 2.2rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; border: 1px solid var(--border-glow); transition: var(--motion-smooth); display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; }
-        .btn-sub:hover { background: var(--surface-secondary); color: var(--accent-blue); border-color: var(--accent-blue); }
-
-        .canvas-simulation-viewport { background: radial-gradient(circle, var(--surface-secondary) 0%, var(--bg-space-black) 100%); border: 1px solid var(--border-glow); height: 440px; border-radius: var(--radius-xl); display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-        .canvas-simulation-viewport::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 80%, rgba(37,99,235,0.05)); pointer-events: none; }
-        .floating-mesh-core { font-size: 7.5rem; animation: masterFloat 6s infinite ease-in-out; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5)); }
-        @keyframes masterFloat { 0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 50% { transform: translateY(-25px) rotate(6deg) scale(1.05); } }
-        .lab-badge-indicator { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glow); padding: 0.45rem 1rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; }
-
-        /* ==========================================================================
-           5. LAB AUTOMATION ATELIER (ANIMAL & TEAM CONFIGURATOR)
-           ========================================================================== */
-        .workspace-card-panel { background: var(--surface-secondary); border: 1px solid var(--border-glow); border-radius: var(--radius-xl); padding: 3.5rem; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
-        .workspace-splitting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5rem; align-items: center; }
-        
-        .simulator-display-container { background: var(--surface-primary); height: 380px; border-radius: var(--radius-lg); display: flex; justify-content: center; align-items: center; border: 1px dashed rgba(255,255,255,0.08); position: relative; }
-        .preview-render-node { font-size: 8.5rem; transition: var(--motion-smooth); filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)); }
-
-        .form-interactive-controls { display: flex; flex-direction: column; gap: 1.5rem; }
-        .control-input-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .control-input-group label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); letter-spacing: 0.5px; text-transform: uppercase; }
-        .form-select-field { background: var(--surface-primary); border: 1px solid var(--border-glow); padding: 1rem 1.25rem; border-radius: var(--radius-md); color: white; font-size: 0.95rem; transition: var(--motion-smooth); }
-        .form-select-field:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 10px rgba(37,99,235,0.2); }
-
-        .tab-navigation-bar { display: flex; gap: 0.5rem; background: var(--surface-primary); padding: 0.4rem; border-radius: var(--radius-md); border: 1px solid var(--border-glow); margin-bottom: 2rem; }
-        .tab-btn-node { flex: 1; background: transparent; border: none; color: var(--text-muted); padding: 1rem; font-weight: 700; border-radius: var(--radius-md); cursor: pointer; transition: var(--motion-smooth); font-size: 0.95rem; }
-        .tab-btn-node.active { background: var(--surface-secondary); color: var(--text-pure); border: 1px solid var(--border-glow); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-
-        /* ==========================================================================
-           6. QUOTATION ARCHITECTURE (.STL / .OBJ / TINKERCAD PIPELINE)
-           ========================================================================== */
-        .quotation-card-wrapper { background: linear-gradient(135deg, var(--surface-secondary) 0%, var(--surface-primary) 100%); border: 1px solid var(--border-glow); border-radius: var(--radius-xl); padding: 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
-        .file-dropzone-area { border: 2px dashed rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); border-radius: var(--radius-lg); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2.5rem; text-align: center; cursor: pointer; transition: var(--motion-smooth); min-height: 280px; }
-        .file-dropzone-area:hover { border-color: var(--accent-purple); background: rgba(139,92,246,0.02); box-shadow: 0 0 20px rgba(139,92,246,0.1); }
-        .file-dropzone-area icon { font-size: 4rem; margin-bottom: 1.25rem; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
-        .native-hidden-file-input { display: none; }
-
-        /* ==========================================================================
-           7. PRODUCTION MATRIX CATALOG (REALISTIC PRICING DESIGN)
-           ========================================================================== */
-        .catalog-filter-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 3.5rem; background: var(--surface-secondary); padding: 0.6rem; border-radius: var(--radius-lg); border: 1px solid var(--border-glow); }
-        .filter-chip { background: transparent; border: none; color: var(--text-muted); padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 700; border-radius: var(--radius-md); cursor: pointer; transition: var(--motion-smooth); }
-        .filter-chip.active, .filter-chip:hover { background: var(--surface-primary); color: var(--text-pure); box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.02); }
-        
-        .matrix-catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 2.5rem; }
-        .catalog-product-card { background: var(--surface-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-glow); overflow: hidden; display: flex; flex-direction: column; transition: var(--motion-smooth); position: relative; }
-        .catalog-product-card:hover { transform: translateY(-6px); border-color: var(--accent-purple); box-shadow: 0 25px 50px rgba(0,0,0,0.6); }
-        
-        .visual-frame-container { height: 240px; background: linear-gradient(180deg, var(--surface-primary) 0%, var(--surface-secondary) 100%); display: flex; justify-content: center; align-items: center; font-size: 5rem; position: relative; border-bottom: 1px solid rgba(255,255,255,0.01); }
-        .product-body-content { padding: 2rem; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-body-content h3 { font-size: 1.3rem; margin-bottom: 0.6rem; color: var(--text-pure); font-weight: 700; letter-spacing: -0.3px; }
-        .product-body-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; flex-grow: 1; line-height: 1.5; }
-        
-        .slicer-spec-badge { display: flex; gap: 0.5rem; font-size: 0.75rem; color: var(--accent-blue); margin-bottom: 1.25rem; font-weight: 600; background: rgba(37,99,235,0.06); padding: 0.35rem 0.65rem; border-radius: 6px; width: fit-content; }
-
-        .product-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 1.25rem; }
-        .currency-tag { font-size: 1.5rem; font-weight: 900; color: var(--accent-emerald); font-family: monospace; }
-        .btn-add-cart { background: var(--surface-primary); border: 1px solid var(--border-glow); color: var(--text-main); font-weight: 700; padding: 0.7rem 1.25rem; border-radius: var(--radius-md); cursor: pointer; transition: var(--motion-smooth); font-size: 0.9rem; }
-        .btn-add-cart:hover { background: var(--accent-purple); color: white; border-color: var(--accent-purple); box-shadow: 0 4px 15px var(--accent-purple-glow); }
-
-        /* ==========================================================================
-           8. MASTER COMMENT FEEDBACK CORE
-           ========================================================================== */
-        .feedback-board-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 4rem; background: var(--surface-secondary); padding: 3.5rem; border-radius: var(--radius-xl); border: 1px solid var(--border-glow); }
-        .star-rating-row { display: flex; gap: 0.5rem; font-size: 1.6rem; margin: 0.5rem 0 1.5rem 0; }
-        .interactive-star-node { cursor: pointer; color: var(--text-darker); transition: var(--motion-smooth); }
-        .interactive-star-node.active { color: var(--accent-amber); text-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
-        
-        .comments-stream-container { display: flex; flex-direction: column; gap: 1.25rem; max-height: 520px; overflow-y: auto; padding-right: 1rem; }
-        .comment-node-card { background: var(--surface-primary); border: 1px solid var(--border-glow); padding: 1.5rem; border-radius: var(--radius-md); transition: var(--motion-smooth); }
-        .comment-node-card:hover { border-color: rgba(255,255,255,0.08); background: rgba(7, 11, 18, 0.7); }
-
-        /* ==========================================================================
-           9. DRAWERS, SLIDERS & IDENTITY AUTH MODALS
-           ========================================================================== */
-        .cart-drawer-panel { position: fixed; top: 0; right: -450px; width: 420px; height: 100vh; background: var(--surface-primary); box-shadow: -15px 0 60px rgba(0,0,0,0.7); z-index: 2000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-left: 1px solid var(--border-glow); display: flex; flex-direction: column; }
-        .cart-drawer-panel.open { right: 0; }
-        
-        .modal-blur-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 4, 8, 0.88); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 3000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: var(--motion-smooth); }
-        .modal-blur-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-window-core { background: var(--surface-secondary); border: 1px solid var(--border-glow); width: 480px; border-radius: var(--radius-xl); padding: 3rem; position: relative; box-shadow: 0 40px 90px rgba(0,0,0,0.7); }
-
-        .auth-screen-toggler { display: flex; border-bottom: 1px solid var(--border-glow); margin-bottom: 2rem; }
-        .auth-toggle-tab { flex: 1; padding: 0.85rem; text-align: center; color: var(--text-muted); cursor: pointer; font-weight: 700; transition: var(--motion-smooth); font-size: 1rem; }
-        .auth-toggle-tab.active { color: var(--text-pure); border-bottom: 2px solid var(--accent-blue); }
-
-        .oauth-federation-wrapper { display: flex; flex-direction: column; gap: 0.85rem; }
-        .oauth-native-btn { width: 100%; padding: 0.95rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; border: 1px solid var(--border-glow); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: var(--motion-smooth); color: white; background: var(--surface-primary); }
-        .oauth-native-btn.google-provider:hover { background: #ea4335; border-color: #ea4335; box-shadow: 0 4px 15px rgba(234,67,53,0.3); }
-        .oauth-native-btn.microsoft-provider:hover { background: #00a4ef; border-color: #00a4ef; box-shadow: 0 4px 15px rgba(0,164,239,0.3); }
-
-        .billing-credit-card-preview { width: 100%; height: 180px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #070b12 100%); border-radius: 14px; margin-bottom: 2rem; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
-
-        /* ==========================================================================
-           10. CORPORATE FOOTER SYSTEM
-           ========================================================================== */
-        .footer-corporate-node { border-top: 1px solid var(--border-glow); padding: 5rem 0 3rem 0; margin-top: 7rem; font-size: 0.9rem; color: var(--text-muted); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .light-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen selection:bg-cyan-500 selection:text-white">
 
-    <div class="ambient-glow-mesh"></div>
-    <div class="technical-blueprint-grid"></div>
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 text-xs py-2 px-4 text-center font-medium tracking-wide text-white flex justify-center items-center gap-2">
+        <i class="fa-solid fa-cube animate-spin"></i> <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla Kişiselleştirilmiş 3D Tasarımlar!</span>
+    </div>
 
-    <!-- MAIN CORE HEADER -->
-    <header class="main-header">
-        <div class="app-container nav-inner-wrapper">
-            <a href="#" class="brand-logo-node">⚙️ 3D STORE <span>LABS v11.5</span></a>
-            <ul class="nav-links-menu">
-                <li><a href="#atolye">Simülasyon Atölyesi</a></li>
-                <li><a href="#ozelfiyat">Özel Modeller</a></li>
-                <li><a href="#katalog">Üretim Matrisi</a></li>
-                <li><a href="#geribildirim">Müşteri Logları</a></li>
-            </ul>
-            <div class="control-panel-widgets">
-                <button class="cart-trigger-btn" onclick="toggleCartDrawer(true)">
-                    🛒 Sepetim <span class="cart-counter-badge" id="cart-counter-node">0</span>
-                </button>
-                
-                <div class="profile-identity-module">
-                    <div class="identity-meta">
-                        Güvenli Profil: <span id="runtime-identity-label" onclick="invokeAuthModal('open')">Oturum Aç</span>
-                    </div>
-                    <div class="avatar-frame">
-                        <img id="avatar-image-node" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f5e71'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>" alt="Identity Avatar" style="width:100%; height:100%; object-fit:cover;">
-                        <input type="file" id="native-avatar-file-input" accept="image/*" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;" onchange="processLocalAvatarImage(event)">
-                    </div>
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 light-panel border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-cyan-600 text-xl transition focus:outline-none cursor-pointer">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-xl font-bold">
+                    <i class="fa-solid fa-print"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-600 to-indigo-600 bg-clip-text text-transparent">3D Store</h1>
+                    <p class="text-[10px] text-slate-500 font-medium tracking-widest uppercase">Bambu Lab & Beta Filament</p>
                 </div>
             </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+            <button onclick="switchPage('home')" class="hover:text-cyan-600 transition text-cyan-600 font-bold cursor-pointer">Tanıtım</button>
+            <button onclick="switchPage('products')" class="hover:text-cyan-600 transition cursor-pointer">Modeller</button>
+            <button onclick="switchPage('filament-lab')" class="hover:text-cyan-600 transition cursor-pointer">Filament Lab</button>
+            <button onclick="switchPage('live-tracker')" class="hover:text-cyan-600 transition cursor-pointer">Canlı Üretim</button>
+            <button onclick="switchPage('reviews-section')" class="hover:text-cyan-600 transition cursor-pointer">Yorumlar</button>
+            <button onclick="switchPage('about-us')" class="hover:text-cyan-600 transition cursor-pointer">Hakkımızda</button>
+        </nav>
+
+        <div class="flex items-center gap-3">
+            <button onclick="openCart()" class="relative bg-white border border-slate-200 hover:border-cyan-500 p-2.5 rounded-xl text-slate-700 transition shadow-sm cursor-pointer">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-cyan-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </button>
+            <button onclick="openAuth()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl text-sm transition shadow-md shadow-cyan-600/20 cursor-pointer">
+                <i class="fa-solid fa-user mr-1"></i> Giriş
+            </button>
         </div>
     </header>
 
-    <main class="app-container">
-        
-        <!-- HERO SEGMENT -->
-        <section class="hero-layout-grid section-spacer">
-            <div class="hero-text-block">
-                <h1>Hassas Katmanlı <br><span>İmalat Kompleksi</span></h1>
-                <p>Bambu Lab A1 Mini donanım ekosistemi ve Ar-Ge harikası Beta PLA polimerleri ile donatılmış yeni nesil akıllı üretim istasyonu. Sıfır tolerans payı ile estetiği odanıza taşıyın.</p>
-                <div class="btn-group">
-                    <a href="#atolye" class="btn-prime">Atölye Laboratuvarı</a>
-                    <a href="#ozelfiyat" class="btn-sub">Tinkercad Dosyası Yükle</a>
+    <!-- Side Menu Drawer -->
+    <div id="side-drawer" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex justify-start">
+        <div class="w-80 bg-white h-full border-r border-slate-200 p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+                <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-sm font-bold">
+                            <i class="fa-solid fa-bars-staggered"></i>
+                        </div>
+                        <h3 class="font-extrabold text-base text-slate-800">Menü</h3>
+                    </div>
+                    <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-slate-800 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="space-y-3 font-medium text-sm text-slate-600">
+                    <button onclick="switchPage('home'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
+                        <i class="fa-solid fa-bullhorn w-5 text-cyan-600"></i> Tanıtım
+                    </button>
+                    <button onclick="switchPage('products'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
+                        <i class="fa-solid fa-cube w-5 text-purple-600"></i> Modeller & Mağaza
+                    </button>
+                    <button onclick="switchPage('filament-lab'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
+                        <i class="fa-solid fa-palette w-5 text-emerald-600"></i> Filament Lab
+                    </button>
+                    <button onclick="switchPage('live-tracker'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
+                        <i class="fa-solid fa-timeline w-5 text-indigo-600"></i> Canlı Üretim Takibi
+                    </button>
+                    <button onclick="switchPage('reviews-section'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
+                        <i class="fa-solid fa-star w-5 text-yellow-500"></i> Müşteri Yorumları
+                    </button>
+                    <button onclick="switchPage('about-us'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
+                        <i class="fa-solid fa-building-shield w-5 text-sky-600"></i> Hakkımızda
+                    </button>
                 </div>
             </div>
-            <div class="canvas-simulation-viewport">
-                <div class="floating-mesh-core" id="hero-dynamic-mesh-icon">🚀</div>
-                <div class="lab-badge-indicator">BAMBU CLOUD INTEGRATION ACTIVE</div>
+            <div class="pt-6 border-t border-slate-100 text-[11px] text-slate-400 text-center">
+                <p>3D Store v15.0 Açık Tema</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto py-8">
+
+        <!-- PAGE 1: HOME -->
+        <section id="page-home" class="page-section active px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center py-12">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-600 text-xs font-semibold mb-6">
+                        <i class="fa-solid fa-bolt"></i> Yeni Nesil 3D Baskı Serisi Yayında
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6 text-slate-900">
+                        Özel Tasarım <span class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">3D Baskı Aksesuarları</span>
+                    </h2>
+                    <p class="text-slate-600 text-base md:text-lg mb-8 leading-relaxed">
+                        Bambu Lab A1 Mini ve Beta Filament kalitesiyle üretilen kişiselleştirilmiş plaka anahtarlıklar ve katmanlı fidget modelleri şimdi keşfetmeniz için hazır.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="switchPage('products')" class="bg-gradient-to-r from-cyan-600 to-indigo-600 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-cyan-600/25 hover:opacity-95 transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-rocket"></i> Mağazayı Keşfet
+                        </button>
+                        <button onclick="switchPage('filament-lab')" class="light-panel hover:border-cyan-500 px-6 py-3.5 rounded-xl font-semibold transition flex items-center gap-2 text-slate-700 cursor-pointer">
+                            <i class="fa-solid fa-palette"></i> Renk Labı
+                        </button>
+                    </div>
+                </div>
+                <div class="light-panel p-6 rounded-3xl relative overflow-hidden shadow-xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-cyan-600"><i class="fa-solid fa-bullhorn"></i> Vitrin Serisi</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold border border-emerald-500/20">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Üretim Aktif
+                        </span>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 border border-slate-100 text-center mb-4 shadow-sm">
+                        <i class="fa-solid fa-print text-6xl text-cyan-600 mb-3"></i>
+                        <h3 class="font-bold text-xl mb-2 text-slate-800">Yüksek Hassasiyetli Baskı</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Gramaj ve baskı süresi optimize edilmiş özel modellerimizle koleksiyonunuzu zenginleştirin.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 text-center shadow-sm">
+                            <span class="text-slate-400 block mb-1">Yazıcı</span>
+                            <span class="font-bold text-cyan-600 text-sm">Bambu A1 Mini</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 text-center shadow-sm">
+                            <span class="text-slate-400 block mb-1">Hammadde</span>
+                            <span class="font-bold text-purple-600 text-sm">Beta Filament</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- LAB WORKSPACE MODULE -->
-        <section class="section-spacer" id="atolye">
-            <div class="section-title-block" style="margin-bottom: 2.5rem;">
-                <h2>Üretim Otomasyon Konfigüratörü</h2>
-                <p>İstediğiniz model geometrisini veya taraftar takım anahtarlık sistemlerini üretim bandına almadan önce gerçek zamanlı olarak simüle edin.</p>
-            </div>
-            
-            <div class="workspace-card-panel">
-                <div class="tab-navigation-bar">
-                    <button class="tab-btn-node active" id="lab-tab-animal" onclick="toggleActiveLabContext('animal')">🐾 Hayvan Geometrileri</button>
-                    <button class="tab-btn-node" id="lab-tab-team" onclick="toggleActiveLabContext('team')">🏆 Taraftar Anahtarlıkları</button>
+        <!-- PAGE 2: PRODUCTS -->
+        <section id="page-products" class="page-section px-6">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900">Ürün Koleksiyonu</h3>
+                    <p class="text-slate-500 text-sm mt-1">İstediğiniz rengi seçin, plaka anahtarlık için metninizi girin ve sepetinize ekleyin.</p>
                 </div>
-
-                <div class="workspace-splitting-grid">
-                    <div class="simulator-display-container">
-                        <div class="preview-render-node" id="simulator-live-preview-node">🐈</div>
-                        <div class="lab-badge-indicator">Katman Çözünürlüğü: 0.12mm (Beta PLA)</div>
-                    </div>
-                    
-                    <div class="form-interactive-controls">
-                        <!-- Animal Subform -->
-                        <div id="subform-animal-context" style="display: flex; flex-direction: column; gap:1.25rem;">
-                            <div class="control-input-group">
-                                <label>Model Seçimi</label>
-                                <select id="select-animal-type" class="form-select-field" onchange="synchronizeSimulatorVisuals()">
-                                    <option value="🐈" data-price="120" data-time="2.5 Saat">Geometrik Sarman Kedi Figürü (Orta Boy)</option>
-                                    <option value="🐕" data-price="140" data-time="3 Saat">Minimalist Doberman Köpek Figürü (Orta Boy)</option>
-                                    <option value="🦜" data-price="160" data-time="3.5 Saat">Rainbow Muhabbet Kuşu Figürü (Özel Renk)</option>
-                                    <option value="🦁" data-price="280" data-time="6 Saat">Görkemli Aslan Baş Büstü (Büyük Boy)</option>
-                                </select>
-                            </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Product 1: Özel Plaka Anahtarlık -->
+                <div class="light-panel rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-cyan-600 text-4xl mb-4 relative overflow-hidden shadow-inner">
+                            <img src="Ekran görüntüsü 2026-09-26 084047.jpg" alt="Özel Plaka Anahtarlık" class="w-full h-full object-cover rounded-xl">
+                            <span class="absolute top-3 right-3 bg-cyan-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">8 Gram</span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-1 text-slate-800">Özel Plaka Anahtarlık</h4>
+                        <p class="text-slate-500 text-xs mb-2">Kişiselleştirilebilir plaka detaylı anahtarlık.</p>
+                        
+                        <!-- Baskı Süresi ve Maliyet Bilgisi -->
+                        <div class="flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 p-2 rounded-xl mb-3 border border-slate-200">
+                            <span><i class="fa-solid fa-clock text-cyan-600 mr-1"></i> Baskı: ~35 dk</span>
+                            <span><i class="fa-solid fa-layer-group text-purple-600 mr-1"></i> Beta Filament</span>
                         </div>
 
-                        <!-- Team Subform -->
-                        <div id="subform-team-context" style="display: none; flex-direction: column; gap:1.25rem;">
-                            <div class="control-input-group">
-                                <label>Kulüp Tasarımı</label>
-                                <select id="select-team-type" class="form-select-field" onchange="synchronizeSimulatorVisuals()">
-                                    <option value="🦁" data-price="45" data-time="45 Dk">Galatasaray Spor Kulübü Anahtarlık (GS)</option>
-                                    <option value="🦅" data-price="45" data-time="45 Dk">Beşiktaş Jimnastik Kulübü Anahtarlık (BJK)</option>
-                                    <option value="🟡" data-price="45" data-time="45 Dk">Fenerbahçe Spor Kulübü Anahtarlık (FB)</option>
-                                    <option value="⚓" data-price="45" data-time="45 Dk">Trabzonspor Kulübü Anahtarlık (TS)</option>
-                                </select>
-                            </div>
+                        <!-- Metin Giriş Alanı -->
+                        <div class="mb-3">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Plaka / Yazı Metni:</label>
+                            <input type="text" id="custom-plate-text" placeholder="Örn: 34 PIJ 756" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                         </div>
 
-                        <div class="control-input-group">
-                            <label>Hacimsel Doluluk Oranı (Infill %)</label>
-                            <select id="select-global-infill" class="form-select-field" onchange="synchronizeSimulatorVisuals()">
-                                <option value="1.0">%15 Standart Hobi Doluluğu</option>
-                                <option value="1.2">%30 Yapısal Mekanik Doluluk (+%20 Fiyat)</option>
-                                <option value="1.5">%50 Endüstriyel Rijit Doluluk (+%50 Fiyat)</option>
+                        <!-- Renk Seçimi -->
+                        <div class="mb-4">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Renk Seçimi:</label>
+                            <select id="color-1" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                                <option value="Beyaz">Beyaz (Beta Filament)</option>
+                                <option value="Siyah">Siyah (Beta Filament)</option>
+                                <option value="Azur Mavisi">Azur Mavisi (Beta Filament)</option>
+                                <option value="Kırmızı">Kırmızı (Beta Filament)</option>
+                                <option value="Sarı">Sarı (Beta Filament)</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <span class="text-lg font-extrabold text-cyan-600">99.99 ₺</span>
+                        <button onclick="addCustomProduct('Özel Plaka Anahtarlık', 99.99, 'custom-plate-text', 'color-1')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md">
+                            <i class="fa-solid fa-plus mr-1"></i> Sepete Ekle
+                        </button>
+                    </div>
+                </div>
 
-                        <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-glow); font-size: 0.9rem;">
-                            ⏱️ Tahmini Baskı Süresi: <span id="configurator-runtime-clock" style="color:var(--accent-blue); font-weight:700;">2.5 Saat</span>
+                <!-- Product 2: Fidget Yıldız -->
+                <div class="light-panel rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-purple-600 text-4xl mb-4 relative overflow-hidden shadow-inner">
+                            <img src="20260926_084210.jpg" alt="Fidget Yıldız" class="w-full h-full object-cover rounded-xl">
+                            <span class="absolute top-3 right-3 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">4 Gram</span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-1 text-slate-800">Fidget Yıldız</h4>
+                        <p class="text-slate-500 text-xs mb-2">İç içe geçen katmanlı odaklanma oyuncağı.</p>
+
+                        <!-- Baskı Süresi ve Maliyet Bilgisi -->
+                        <div class="flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 p-2 rounded-xl mb-3 border border-slate-200">
+                            <span><i class="fa-solid fa-clock text-cyan-600 mr-1"></i> Baskı: ~20 dk</span>
+                            <span><i class="fa-solid fa-layer-group text-purple-600 mr-1"></i> Beta Filament</span>
                         </div>
 
-                        <button class="btn-prime" style="width: 100%;" onclick="pushLabConfigToBasket()">Seçili Konfigürasyonu Sepete Ekle - <span id="configurator-cost-label">120</span> TL</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SPECIAL QUOTATION MODULE (.STL / .OBJ / TINKERCAD) -->
-        <section class="section-spacer" id="ozelfiyat">
-            <div class="section-title-block" style="margin-bottom: 3rem;">
-                <h2>Özel Fiyat Al & 3D Tasarım Gönder</h2>
-                <p>Tinkercad veya benzeri CAD yazılımlarından dışa aktardığınız `.STL` veya `.OBJ` formatındaki dosyalarınızı yükleyerek anında dilimleme algoritması üzerinden özel fiyat teklifi alın.</p>
-            </div>
-
-            <div class="quotation-card-wrapper">
-                <div class="file-dropzone-area" onclick="document.getElementById('native-3d-file-uploader').click()">
-                    <icon>📂</icon>
-                    <h4 style="font-weight: 700; margin-bottom: 0.5rem;" id="upload-zone-text-headline">Dosyayı Seçin veya Buraya Sürükleyin</h4>
-                    <p style="color: var(--text-muted); font-size: 0.85rem;">Formatlar: .STL, .OBJ, .TINKERCAD (Maks: 50MB)</p>
-                    <input type="file" id="native-3d-file-uploader" class="native-hidden-file-input" accept=".stl,.obj,.tinkercad,.txt" onchange="handleIncoming3DFileObject(event)">
-                </div>
-
-                <div class="form-interactive-controls">
-                    <div class="control-input-group">
-                        <label>Filament Renk Seçimi</label>
-                        <select id="quote-filament-color" class="form-select-field">
-                            <option value="Uzay Siyahı">Mat Uzay Siyahı</option>
-                            <option value="Kutup Beyazı">Parlak Kutup Beyazı</option>
-                            <option value="Titanyum Gri">Metalik Titanyum Gri</option>
-                            <option value="Neon Floresan">Floresan Neon Yeşil</option>
-                        </select>
-                    </div>
-                    <div class="control-input-group">
-                        <label>Talep Edilen Üretim Adedi</label>
-                        <input type="number" id="quote-production-quantity" class="form-select-field" value="1" min="1" style="background: var(--surface-primary); border: 1px solid var(--border-glow); color: white;">
-                    </div>
-                    <button class="btn-prime" style="width:100%; background: var(--accent-emerald);" onclick="calculateSpecialQuoteOffer()">Dilimleme Analizini Başlat ve Teklif Al</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- PRODUCT CATALOG MATRIX WITH REMOVED DIET PRODUCTS -->
-        <section class="section-spacer" id="katalog">
-            <div class="section-title-block">
-                <h2>Üretim Matrisi Ürün Kataloğu</h2>
-                <p>Bambu Lab dilimleme toleranslarına %100 uyumlu, pürüzsüz yüzey kalitesiyle üretilen popüler hazır tasarımlarımız.</p>
-            </div>
-
-            <div class="catalog-filter-bar">
-                <button class="filter-chip active" onclick="executeCatalogFiltering('all', this)">Tüm Modeller</button>
-                <button class="filter-chip" onclick="executeCatalogFiltering('animal', this)">🐾 Hayvan Geometrileri</button>
-                <button class="filter-chip" onclick="executeCatalogFiltering('team', this)">🏆 Taraftar Ürünleri</button>
-                <button class="filter-chip" onclick="executeCatalogFiltering('decor', this)">🏺 Dekoratif Objekler</button>
-                <button class="filter-chip" onclick="executeCatalogFiltering('organizer', this)">📦 Masaüstü Düzenleyiciler</button>
-            </div>
-
-            <div class="matrix-catalog-grid" id="catalog-grid-injector-node">
-                <!-- Data blocks will be dynamically generated via JavaScript -->
-            </div>
-        </section>
-
-        <!-- FEEDBACK AND REVIEWS BOARD -->
-        <section class="section-spacer" id="geribildirim">
-            <div class="section-title-block">
-                <h2>Sistem İnceleme ve Değerlendirme Logları</h2>
-                <p>Baskı hassasiyetimiz ve kullanıcı deneyimlerimiz hakkında gerçek zamanlı topluluk geri bildirimleri.</p>
-            </div>
-
-            <div class="feedback-board-grid">
-                <div class="form-interactive-controls">
-                    <h3 style="font-size:1.3rem; font-weight:800;">Deneyiminizi Loglayın</h3>
-                    <div class="control-input-group">
-                        <label>Mühendis / Kullanıcı Adınız</label>
-                        <input type="text" id="review-input-author" class="form-select-field" placeholder="Örn: Kaan Yılmaz" style="background:var(--surface-primary);">
-                    </div>
-                    <div class="control-input-group">
-                        <label>Kalite Skoru</label>
-                        <div class="star-rating-row" id="star-interactive-wrapper">
-                            <span class="interactive-star-node active" data-value="1" onclick="updateInteractiveStarRating(1)">★</span>
-                            <span class="interactive-star-node active" data-value="2" onclick="updateInteractiveStarRating(2)">★</span>
-                            <span class="interactive-star-node active" data-value="3" onclick="updateInteractiveStarRating(3)">★</span>
-                            <span class="interactive-star-node active" data-value="4" onclick="updateInteractiveStarRating(4)">★</span>
-                            <span class="interactive-star-node active" data-value="5" onclick="updateInteractiveStarRating(5)">★</span>
+                        <div class="mb-4">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Renk Seçimi:</label>
+                            <select id="color-2" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                                <option value="Beyaz">Beyaz (Beta Filament)</option>
+                                <option value="Siyah">Siyah (Beta Filament)</option>
+                                <option value="Azur Mavisi">Azur Mavisi (Beta Filament)</option>
+                                <option value="Sarı">Sarı (Beta Filament)</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="control-input-group">
-                        <label>İnceleme Notunuz</label>
-                        <textarea id="review-input-text" class="form-select-field" rows="4" placeholder="Katman geçişleri son derece pürüzsüz..." style="background:var(--surface-primary); resize:none;"></textarea>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <span class="text-lg font-extrabold text-cyan-600">99.99 ₺</span>
+                        <button onclick="addStandardProduct('Fidget Yıldız', 99.99, 'color-2')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md">
+                            <i class="fa-solid fa-plus mr-1"></i> Sepete Ekle
+                        </button>
                     </div>
-                    <button class="btn-prime" onclick="commitUserReviewToDatabase()">Yorumu Yayınla</button>
                 </div>
 
+                <!-- Product 3: Fidget Kalp -->
+                <div class="light-panel rounded-3xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-48 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-pink-600 text-4xl mb-4 relative overflow-hidden shadow-inner">
+                            <img src="20260926_084313.jpg" alt="Fidget Kalp" class="w-full h-full object-cover rounded-xl">
+                            <span class="absolute top-3 right-3 bg-pink-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">6 Gram</span>
+                        </div>
+                        <h4 class="font-bold text-lg mb-1 text-slate-800">Fidget Kalp</h4>
+                        <p class="text-slate-500 text-xs mb-2">Şık kalpli katmanlı fidget aksesuarı.</p>
+
+                        <!-- Baskı Süresi ve Maliyet Bilgisi -->
+                        <div class="flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 p-2 rounded-xl mb-3 border border-slate-200">
+                            <span><i class="fa-solid fa-clock text-cyan-600 mr-1"></i> Baskı: ~28 dk</span>
+                            <span><i class="fa-solid fa-layer-group text-purple-600 mr-1"></i> Beta Filament</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Renk Seçimi:</label>
+                            <select id="color-3" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                                <option value="Siyah">Siyah (Beta Filament)</option>
+                                <option value="Beyaz">Beyaz (Beta Filament)</option>
+                                <option value="Azur Mavisi">Azur Mavisi (Beta Filament)</option>
+                                <option value="Kırmızı">Kırmızı (Beta Filament)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <span class="text-lg font-extrabold text-cyan-600">99.99 ₺</span>
+                        <button onclick="addStandardProduct('Fidget Kalp', 99.99, 'color-3')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md">
+                            <i class="fa-solid fa-plus mr-1"></i> Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: FILAMENT LAB -->
+        <section id="page-filament-lab" class="page-section px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h3 class="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900">Filament Renk Laboratuvarı</h3>
+                <p class="text-slate-500 text-sm">Üretimlerimizde kullandığımız Beta Filament renk paletini inceleyin.</p>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-red-500 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Kırmızı</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-green-500 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Yeşil</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-yellow-400 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Sarı</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-slate-400 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Gri</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-sky-500 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Azur Mavisi</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-blue-800 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Koyu Mavi</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-white border border-slate-200 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Beyaz</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-slate-900 mx-auto mb-2 shadow-md"></div>
+                    <h4 class="font-bold text-sm text-slate-800">Siyah</h4>
+                    <p class="text-[10px] text-slate-400 mt-1">Stok: Aktif</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: LIVE TRACKER -->
+        <section id="page-live-tracker" class="page-section px-6">
+            <div class="light-panel p-8 md:p-12 rounded-3xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-timeline text-cyan-600"></i> Canlı Üretim & Sipariş Takibi
+                        </h3>
+                        <p class="text-slate-500 text-xs mt-1">Bambu Lab A1 Mini üzerindeki baskı aşamalarını gözlemleyin.</p>
+                    </div>
+                    <button onclick="simulateOrder()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-md shadow-indigo-600/30 cursor-pointer">
+                        <i class="fa-solid fa-play mr-1"></i> Simülasyonu Başlat
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
+                    <div id="step-1" class="p-4 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-700 transition">
+                        <i class="fa-solid fa-file-arrow-up text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">1. Model Hazırlama</h5>
+                        <p class="text-[10px] text-slate-500 mt-1">Tinkercad / Dilimleme</p>
+                    </div>
+                    <div id="step-2" class="p-4 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
+                        <i class="fa-solid fa-scissors text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">2. Bambu Studio</h5>
+                        <p class="text-[10px] text-slate-400 mt-1">G-code Oluşturma</p>
+                    </div>
+                    <div id="step-3" class="p-4 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
+                        <i class="fa-solid fa-print text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">3. Tabla Baskısı</h5>
+                        <p class="text-[10px] text-slate-400 mt-1">Beta Filament Üretim</p>
+                    </div>
+                    <div id="step-4" class="p-4 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
+                        <i class="fa-solid fa-box-open text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">4. Paketleme</h5>
+                        <p class="text-[10px] text-slate-400 mt-1">Güvenli Gönderim</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 5: REVIEWS -->
+        <section id="page-reviews-section" class="page-section px-6">
+            <div class="flex justify-between items-center mb-10">
                 <div>
-                    <h4 style="font-size:1.1rem; font-weight:700; margin-bottom:1.5rem; color:var(--text-pure);">Topluluk Geri Bildirim Yayını</h4>
-                    <div class="comments-stream-container" id="comments-render-target">
-                        <!-- Comments will be rendered dynamically -->
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900">Müşteri Değerlendirmeleri</h3>
+                    <p class="text-slate-500 text-sm mt-1">Destekçilerimizin ve alıcıların gerçek geri bildirimleri.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="light-panel p-6 rounded-3xl">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500/10 text-cyan-600 font-bold flex items-center justify-center">K</div>
+                            <div>
+                                <h5 class="font-bold text-sm text-slate-800">Kerem T.</h5>
+                                <span class="text-[10px] text-slate-500">Özel Plaka Anahtarlık</span>
+                            </div>
+                        </div>
+                        <div class="text-yellow-500 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-xs leading-relaxed mb-4">"Plaka yazısı harika oturmuş, 8 gramlık hafif yapısıyla anahtarlıkta hiç ağırlık yapmıyor. Kesinlikle tavsiye ederim."</p>
+                </div>
+                <div class="light-panel p-6 rounded-3xl">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/10 text-purple-600 font-bold flex items-center justify-center">B</div>
+                            <div>
+                                <h5 class="font-bold text-sm text-slate-800">Burak A.</h5>
+                                <span class="text-[10px] text-slate-500">Fidget Yıldız</span>
+                            </div>
+                        </div>
+                        <div class="text-yellow-500 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-xs leading-relaxed mb-4">"Katmanlı geçişler kusursuz çalışıyor, kalitesi gerçekten muazzam, çok memnun kaldım."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 6: ABOUT US -->
+        <section id="page-about-us" class="page-section px-6">
+            <div class="light-panel p-8 md:p-12 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-cyan-600 block mb-2"><i class="fa-solid fa-building-shield"></i> Hakkımızda</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold mb-4 text-slate-900">Yenilikçi 3D Baskı Girişimi</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        3D Store; Bambu Lab A1 Mini ve Beta Filament teknolojisiyle özgün tasarımları hayata geçiren topluluk odaklı bir girişimdir.
+                    </p>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        <strong>Vizyonumuz:</strong> En kaliteli hammaddeleri en kusursuz tasarımlarla buluşturmak.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 text-center shadow-sm">
+                        <i class="fa-solid fa-print text-3xl text-cyan-600 mb-2"></i>
+                        <h5 class="font-bold text-sm mb-1 text-slate-800">A1 Mini Gücü</h5>
+                        <p class="text-[11px] text-slate-500">Hassas Üretim</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 text-center shadow-sm">
+                        <i class="fa-solid fa-atom text-3xl text-purple-600 mb-2"></i>
+                        <h5 class="font-bold text-sm mb-1 text-slate-800">Beta Filament</h5>
+                        <p class="text-[11px] text-slate-500">Yüksek Kalite</p>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- SHOPPING CART PANEL DRAWER -->
-    <div class="cart-drawer-panel" id="cart-drawer-sidebar">
-        <div style="padding: 1.75rem; border-bottom:1px solid var(--border-glow); display:flex; justify-content:space-between; align-items:center; background:var(--surface-secondary);">
-            <h3 style="font-size:1.2rem; font-weight:800; color:white;">Baskı Üretim Kuyruğu</h3>
-            <button onclick="toggleCartDrawer(false)" style="background:transparent; border:none; color:var(--text-muted); font-size:1.8rem; cursor:pointer;">&times;</button>
-        </div>
-        <div style="flex-grow:1; padding:1.75rem; overflow-y:auto; display:flex; flex-direction:column; gap:1.25rem;" id="cart-items-stream-injector">
-            <!-- Injected via JavaScript -->
-        </div>
-        
-        <!-- PROMO CODE & LIVE METRICS INFRASTRUCTURE (NEW IN v11.5) -->
-        <div style="padding:1rem 1.75rem; background:rgba(0,0,0,0.2); border-top:1px solid var(--border-glow);">
-            <div style="display:flex; gap:0.5rem;">
-                <input type="text" id="cart-coupon-field" class="form-select-field" placeholder="KUPON KODU (BETA3D)" style="padding:0.5rem 1rem; font-size:0.85rem; flex-grow:1;">
-                <button class="btn-prime" style="padding:0.5rem 1rem; font-size:0.85rem;" onclick="applyPromoCouponCode()">Uygula</button>
-            </div>
-        </div>
-
-        <div style="padding:1.75rem; border-top:1px solid var(--border-glow); background:var(--surface-secondary);">
-            <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-muted); margin-bottom:0.4rem;">
-                <span>Ara Toplam:</span>
-                <span id="label-subtotal-cost">0 TL</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-muted); margin-bottom:0.4rem;">
-                <span>Kargo Bedeli:</span>
-                <span id="label-shipping-cost">0 TL</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--accent-amber); margin-bottom:0.8rem; display:none;" id="row-discount-node">
-                <span>%10 Kupon İndirimi:</span>
-                <span id="label-discount-cost">-0 TL</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.2rem; margin-bottom:1.5rem;">
-                <span>Toplam Tutar:</span>
-                <span id="cart-total-value-label" style="color:var(--accent-emerald);">0 TL</span>
-            </div>
-            <button class="btn-prime" style="width: 100%;" onclick="togglePaymentGatewayModal('open')">Güvenli Ödeme Aşamasına Geç</button>
-        </div>
-    </div>
-
-    <!-- ADVANCED MULTI-OAUTH AUTH MODAL (REALISTIC SIMULATION) -->
-    <div class="modal-blur-overlay" id="auth-modal-overlay">
-        <div class="modal-window-core">
-            <button style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--text-muted); font-size:1.6rem; cursor:pointer;" onclick="invokeAuthModal('close')">&times;</button>
-            
-            <div class="auth-screen-toggler">
-                <div class="auth-toggle-tab active" id="auth-tab-login" onclick="toggleAuthScreenMode('login')">Giriş Yap</div>
-                <div class="auth-toggle-tab" id="auth-tab-register" onclick="toggleAuthScreenMode('register')">Kayıt Ol</div>
-            </div>
-
-            <!-- OAUTH DISPATCHER BLOCK -->
-            <div id="oauth-federation-wrapper" class="oauth-federation-wrapper">
-                
-                <!-- REAL GOOGLE IDENTITY SERVICE NODE -->
-                <div id="g_id_onload"
-                     data-client_id="YOUR_ORGANIZATION_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleGoogleIdentityResponse"
-                     data-auto_prompt="false">
-                </div>
-                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black" data-text="signin_with" data-size="large" data-logo_alignment="left" style="width:100%;"></div>
-
-                <!-- REALISTIC MICROSOFT IDENTITY INFRASTRUCTURE NODE -->
-                <button class="oauth-native-btn microsoft-provider" onclick="handleMicrosoftIdentityResponse()">
-                    <svg style="width:18px; height:18px;" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg"><path fill="#f35325" d="M0 0h11v11H0z"/><path fill="#81bc06" d="M12 0h11v11H12z"/><path fill="#05a6f0" d="M0 12h11v11H0z"/><path fill="#ffba08" d="M12 12h11v11H12z"/></svg>
-                    Microsoft Identity ile Oturum Aç
-                </button>
-
-                <div style="text-align:center; color:var(--text-darker); font-size:0.8rem; margin:0.5rem 0;">VEYA STANDART E-POSTA KULLANIN</div>
-            </div>
-
-            <!-- E-POSTA CORE SIGN-IN/SIGN-UP FORM INJECTOR -->
-            <div class="form-interactive-controls" id="native-auth-forms-injector" style="margin-top: 1rem;">
-                <!-- Injected via JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- PCI-DSS BILLING GATEWAY MODAL -->
-    <div class="modal-blur-overlay" id="checkout-modal-overlay">
-        <div class="modal-window-core">
-            <button style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--text-muted); font-size:1.6rem; cursor:pointer;" onclick="togglePaymentGatewayModal('close')">&times;</button>
-            <h3 style="font-size:1.3rem; margin-bottom:1.5rem; text-align:center; font-weight:800;">🔒 PCI-DSS Güvenli Ödeme Tüneli</h3>
-            
-            <div class="billing-credit-card-preview">
-                <div style="width:40px; height:26px; background:#e2e8f0; border-radius:4px; opacity:0.6;"></div>
-                <div style="font-size:1.3rem; letter-spacing:3px; color:white; font-family:monospace;" id="card-display-number">•••• •••• •••• ••••</div>
-                <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
-                    <div>
-                        <span style="color:var(--text-muted); display:block; font-size:0.55rem; letter-spacing:1px;">KART SAHİBİ</span>
-                        <span id="card-display-owner">MÜŞTERİ ADI</span>
-                    </div>
-                    <div style="font-weight:900; font-style:italic; font-size:1rem;" id="card-display-logo">CARD</div>
-                </div>
-            </div>
-
-            <div class="form-interactive-controls">
-                <div class="control-input-group">
-                    <label>Kart Sahibi</label>
-                    <input type="text" id="form-card-owner" class="form-select-field" placeholder="KART ÜZERİNDEKİ İSİM" oninput="synchronizeBillingCardGraphics()">
-                </div>
-                <div class="control-input-group">
-                    <label>Kart Numarası</label>
-                    <input type="text" id="form-card-digits" class="form-select-field" placeholder="0000 0000 0000 0000" maxlength="19" oninput="synchronizeBillingCardGraphics()">
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                    <div class="control-input-group">
-                        <label>Son Kullanma</label>
-                        <input type="text" id="form-card-expiry" class="form-select-field" placeholder="AA/YY" maxlength="5">
-                    </div>
-                    <div class="control-input-group">
-                        <label>CVC</label>
-                        <input type="password" id="form-card-cvc" class="form-select-field" placeholder="•••" maxlength="3">
-                    </div>
-                </div>
-                <button class="btn-prime" style="margin-top:1rem; background:var(--accent-purple);" onclick="processFinalMonetaryTransaction()">Ödemeyi Doğrula ve Üretime Aktar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CORPORATE STRUCTURAL FOOTER -->
-    <footer class="footer-corporate-node app-container">
-        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:4rem;">
-            <div>
-                <p style="font-weight:900; color:var(--text-pure); margin-bottom:0.5rem;">⚙️ 3D STORE LABS INTERNATIONAL</p>
-                <p style="line-height:1.7;">Bambu Lab A1 Mini katmanlı imalat kompleksi otomasyon ve dilimleme ağı. Sistemde işlenen tüm siparişler yüksek yüzey pürüzsüzlüğü ve yapısal mukavemet testlerinden geçirilmiş orijinal Beta PLA filament bobinleri ile basılmaktadır.</p>
-            </div>
-            <div style="text-align:right;">
-                <p style="font-weight:700; color:var(--text-pure);">Bambu & Cloud Sync System</p>
-                <p>Üretim Havuzu Durumu: v11.5 Stable</p>
-                <p style="color:var(--accent-emerald); font-weight:700; margin-top:0.5rem;">✓ Microsoft & Google Identity Guarded</p>
-            </div>
-        </div>
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 px-6 py-10 max-w-7xl mx-auto text-center text-xs text-slate-500">
+        <p>&copy; 2025-2026 3D Store by Bambu Lab & Beta Filament. Tüm hakları saklıdır. v15.0 Açık Tema.</p>
     </footer>
 
-    <!-- RUNTIME LOGIC ENGINE JAVASCRIPT -->
+    <!-- AI Voice Assistant Widget -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <button onclick="toggleChatbot()" class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-600 to-indigo-600 text-white flex items-center justify-center text-2xl shadow-xl shadow-cyan-600/30 hover:scale-110 transition cursor-pointer">
+            <i class="fa-solid fa-microphone-lines"></i>
+        </button>
+        <div id="chatbot-box" class="hidden absolute bottom-16 right-0 w-80 md:w-96 light-panel rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[420px] border border-slate-200">
+            <div class="bg-white p-4 border-b border-slate-100 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-cyan-500 animate-pulse"></div>
+                    <h5 class="font-bold text-xs text-slate-800">FiloBot (Sesli Asistan)</h5>
+                </div>
+                <button onclick="toggleChatbot()" class="text-slate-400 hover:text-slate-800 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="chat-messages" class="p-4 flex-1 overflow-y-auto space-y-3 text-xs">
+                <div class="bg-white p-3 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed shadow-sm">
+                    Selam! Ben sesli asistanın FiloBot. Plaka anahtarlıklar, gramajlar veya baskı süreleri hakkında bana soru sorabilirsin!
+                </div>
+            </div>
+            <div class="p-3 bg-white border-t border-slate-100 flex gap-2">
+                <input type="text" id="chat-input" placeholder="FiloBot'a seslen..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500" onkeypress="handleKeyPress(event)">
+                <button onclick="sendChatMessage()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-2 rounded-xl font-bold transition cursor-pointer"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex justify-end">
+        <div class="w-full max-w-md bg-white h-full border-l border-slate-200 p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                    <h3 class="font-extrabold text-lg flex items-center gap-2 text-slate-800"><i class="fa-solid fa-cart-shopping text-cyan-600"></i> Alışveriş Sepeti</h3>
+                    <button onclick="closeCart()" class="text-slate-400 hover:text-slate-800 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div id="cart-items" class="space-y-4 overflow-y-auto max-h-[60vh]">
+                    <p class="text-slate-400 text-xs text-center py-8">Sepetiniz henüz boş.</p>
+                </div>
+            </div>
+            <div class="pt-4 border-t border-slate-100">
+                <div class="flex justify-between items-center mb-4 text-sm font-bold text-slate-800">
+                    <span>Toplam:</span>
+                    <span id="cart-total" class="text-cyan-600 text-lg">0.00 ₺</span>
+                </div>
+                <button class="w-full bg-gradient-to-r from-cyan-600 to-indigo-600 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-cyan-600/20 cursor-pointer">Güvenli Ödeme Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="light-panel w-full max-w-md p-8 rounded-3xl relative shadow-2xl">
+            <button onclick="closeAuth()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-extrabold text-xl mb-2 text-center text-slate-900">3D Store Giriş</h3>
+            <p class="text-slate-500 text-xs text-center mb-6">Hesabınıza giriş yaparak siparişlerinizi takip edin.</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">E-Posta Adresi</label>
+                    <input type="email" placeholder="ornek@mail.com" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Şifre</label>
+                    <input type="password" placeholder="••••••••" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                </div>
+                <button class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-md">Giriş Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Controller -->
     <script>
-        let globalBasketMemory = [];
-        let globalLabContextKey = 'animal';
-        let globalSelectedStarValue = 5;
-        let globalAuthScreenContext = 'login';
-        let activeFilterKeyword = 'all';
-        let appliedDiscountRate = 0.0; // 0% initial
+        let cart = [];
 
-        // REALISTIC MARKET PRICES REFLECTING FILAMENT CONSUMPTION & PRINT RUNTIMES
-        const productMasterRepository = [
-            { id: "p1", category: "animal", title: "Geometrik Sarman Kedi", desc: "Düşük katman yüksekliğinde, harika gölgelendirmelere sahip dekoratif kedi figürü.", cost: 120, time: "2.5 Saat", weight: "40g", icon: "🐈" },
-            { id: "p2", category: "animal", title: "Minimalist Doberman", desc: "Keskin hatları ve geometrik yüzeyleriyle modern masalara uygun köpek büstü.", cost: 140, time: "3 Saat", weight: "50g", icon: "🐕" },
-            { id: "p3", category: "animal", title: "Rainbow Muhabbet Kuşu", desc: "Renk geçişli özel Beta PLA filamentleriyle basılan gerçeğe yakın kuş figürü.", cost: 160, time: "3.5 Saat", weight: "55g", icon: "🦜" },
-            { id: "p4", category: "team", title: "Galatasaray Aslan Anahtarlık", desc: "Özel çift katman geçişli sarı-kırmızı taraftar anahtarlığı.", cost: 45, time: "45 Dk", weight: "12g", icon: "🦁" },
-            { id: "p5", category: "team", title: "Fenerbahçe Duvar Logosu", desc: "Sarı-lacivert renk katmanlarına sahip duvara asılabilir Fener amblemi.", cost: 110, time: "2 Saat", weight: "35g", icon: "🟡" },
-            { id: "p6", category: "team", title: "Beşiktaş Kartal Anahtarlık", desc: "Yüksek infill doluluk oranına sahip siyah-beyaz asil kartal anahtarlığı.", cost: 45, time: "45 Dk", weight: "12g", icon: "🦅" },
-            { id: "p7", category: "team", title: "Trabzonspor Fırtına Logosu", desc: "Bordo-mavi endüstriyel PLA malzemeden basılmış taraftar anahtarlığı.", cost: 45, time: "45 Dk", weight: "12g", icon: "⚓" },
-            { id: "p8", category: "decor", title: "Eiffel Kulesi (Ölçekli)", desc: "Bambu Lab A1 Mini'nin üstün köprü kurma (bridging) yeteneğini gösteren detaylı mimari kule.", cost: 380, time: "9 Saat", weight: "120g", icon: "🗼" },
-            { id: "p9", category: "decor", title: "Moai Paskalya Adası Heykeli", desc: "Odanıza mistik ve sanatsal bir hava katacak pürüzsüz yüzeyli taş görünümlü heykel.", cost: 240, time: "5.5 Saat", weight: "85g", icon: "🗿" },
-            { id: "p10", category: "decor", title: "Sihirli Küp Lambader Abajuru", desc: "İçine ışık yerleştirildiğinde harika gölgeler oluşturan parametrik delikli dekoratif küp.", cost: 520, time: "12 Saat", weight: "210g", icon: "🔮" },
-            { id: "p11", category: "organizer", title: "Hexagon Petek Kalemlik", desc: "Çalışma masanızı düzene sokacak, altıgen mimari formda fonksiyonel kalem düzenleyici.", cost: 190, time: "4 Saat", weight: "70g", icon: "📦" },
-            { id: "p12", category: "organizer", title: "Akıllı Kablo Toplayıcı Hub", desc: "Masa arkasındaki USB ve şarj kablolarını düzene sokan esnek ve dayanıklı PLA organizer.", cost: 95, time: "2 Saat", weight: "30g", icon: "🔌" }
-        ];
-
-        const prefilledSystemReviews = [
-            { author: "Kaan Yılmaz", score: 5, text: "Bambu Lab A1 Mini baskı kalitesi kusursuz, Moai heykeli masama çok modern bir hava kattı." },
-            { author: "Zeynep Aslan", score: 5, text: "Hexagon kalemlik siparişi verdim. Katmanlar o kadar pürüzsüz ki 3D yazıcıdan çıktığına inanmak zor." }
-        ];
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initializeFeedbackDatabase();
-            executeCatalogDOMRendering();
-            toggleAuthScreenMode('login');
-            synchronizeSimulatorVisuals();
-            
-            const cachedUser = localStorage.getItem('auth_user_tag');
-            if (cachedUser) document.getElementById('runtime-identity-label').innerText = cachedUser;
-            
-            setInterval(() => {
-                const icons = ["🚀", "📐", "⚙️", "🏺", "🗿", "📦"];
-                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
-                const node = document.getElementById('hero-dynamic-mesh-icon');
-                if(node) node.innerText = randomIcon;
-            }, 3000);
-        });
-
-        function handleGoogleIdentityResponse(googleJwtCredentialResponse) {
-            try {
-                const base64UrlPayload = googleJwtCredentialResponse.credential.split('.')[1];
-                const base64DecodedPayload = JSON.parse(atob(base64UrlPayload));
-                const googleUserFullName = base64DecodedPayload.name.toUpperCase();
-                localStorage.setItem('auth_user_tag', googleUserFullName);
-                document.getElementById('runtime-identity-label').innerText = googleUserFullName;
-                alert(`🔒 Google Identity Verification Service bağlantısı onaylandı! Sistem Hub Girişi Başarılı: ${googleUserFullName}`);
-                invokeAuthModal('close');
-            } catch (err) {
-                alert('Google Identity Doğrulama Protokol Hatası.');
-            }
-        }
-
-        function handleMicrosoftIdentityResponse() {
-            try {
-                const microsoftUserFullName = "MS_MÜHENDİS_" + Math.floor(100 + Math.random() * 900);
-                localStorage.setItem('auth_user_tag', microsoftUserFullName);
-                document.getElementById('runtime-identity-label').innerText = microsoftUserFullName;
-                alert(`🔒 Microsoft Active Directory & Azure OAuth El Sıkışması Başarılı!\nBağlantı Türü: Secure Cloud Token\nKullanıcı: ${microsoftUserFullName}`);
-                invokeAuthModal('close');
-            } catch (err) {
-                alert('Microsoft Cloud Identity Kimlik Doğrulama Hatası.');
-            }
-        }
-
-        function toggleAuthScreenMode(targetMode) {
-            globalAuthScreenContext = targetMode;
-            document.getElementById('auth-tab-login').classList.toggle('active', targetMode === 'login');
-            document.getElementById('auth-tab-register').classList.toggle('active', targetMode === 'register');
-            
-            const container = document.getElementById('native-auth-forms-injector');
-            if (targetMode === 'login') {
-                container.innerHTML = `
-                    <div class="control-input-group">
-                        <label>Kurumsal E-Posta</label>
-                        <input type="email" id="auth-field-email" class="form-select-field" placeholder="muhendis@3dstore.com">
-                    </div>
-                    <div class="control-input-group">
-                        <label>Güvenli Şifre</label>
-                        <input type="password" id="auth-field-pass" class="form-select-field" placeholder="••••••••">
-                    </div>
-                    <button class="btn-prime" style="margin-top:0.5rem; background: var(--accent-blue);" onclick="processNativeAuth('login')">Sistem Ağında Oturum Aç</button>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="control-input-group">
-                        <label>Adınız Soyadınız</label>
-                        <input type="text" id="auth-field-name" class="form-select-field" placeholder="Örn: Kaan Yılmaz">
-                    </div>
-                    <div class="control-input-group">
-                        <label>E-Posta Adresi</label>
-                        <input type="email" id="auth-field-email" class="form-select-field" placeholder="muhendis@3dstore.com">
-                    </div>
-                    <div class="control-input-group">
-                        <label>Şifre Belirle</label>
-                        <input type="password" id="auth-field-pass" class="form-select-field" placeholder="••••••••">
-                    </div>
-                    <button class="btn-prime" style="margin-top:0.5rem; background: var(--accent-emerald);" onclick="processNativeAuth('register')">Veritabanına Kaydet ve Profil Oluştur</button>
-                `;
-            }
-        }
-
-        function processNativeAuth(action) {
-            const email = document.getElementById('auth-field-email').value.trim();
-            const pass = document.getElementById('auth-field-pass').value;
-
-            if (!email || !pass) {
-                alert('⚠️ Doğrulama Hatası: Lütfen gerekli alanları doldurun.');
-                return;
-            }
-
-            if (action === 'register') {
-                const name = document.getElementById('auth-field-name').value.trim() || 'KULLANICI';
-                localStorage.setItem('db_user_mail_' + email, JSON.stringify({ name, pass }));
-                alert('✓ Kurumsal kaydınız yerel veritabanına işlendi! Giriş yapabilirsiniz.');
-                toggleAuthScreenMode('login');
-            } else {
-                const storedUserData = localStorage.getItem('db_user_mail_' + email);
-                if (storedUserData) {
-                    const parsedUser = JSON.parse(storedUserData);
-                    if (parsedUser.pass === pass) {
-                        const userLabel = parsedUser.name.toUpperCase();
-                        localStorage.setItem('auth_user_tag', userLabel);
-                        document.getElementById('runtime-identity-label').innerText = userLabel;
-                        alert(`🔒 Hoş Geldiniz, Giriş Doğrulandı: ${userLabel}`);
-                        invokeAuthModal('close');
-                    } else {
-                        alert('❌ Kimlik Doğrulama Hatası: Hatalı şifre girdiniz.');
-                    }
-                } else {
-                    const fallBackLabel = email.split('@')[0].toUpperCase();
-                    localStorage.setItem('auth_user_tag', fallBackLabel);
-                    document.getElementById('runtime-identity-label').innerText = fallBackLabel;
-                    alert(`🔒 Otomatik Hızlı Giriş Tüneli Aktif Edildi: ${fallBackLabel}`);
-                    invokeAuthModal('close');
-                }
-            }
-        }
-
-        function handleIncoming3DFileObject(e) {
-            const fileObj = e.target.files[0];
-            if (fileObj) {
-                document.getElementById('upload-zone-text-headline').innerText = `✓ Geometri Yüklendi: ${fileObj.name}`;
-            }
-        }
-
-        function calculateSpecialQuoteOffer() {
-            const fileCheck = document.getElementById('native-3d-file-uploader').files[0];
-            const color = document.getElementById('quote-filament-color').value;
-            const quantity = parseInt(document.getElementById('quote-production-quantity').value) || 1;
-
-            if (!fileCheck) {
-                alert('⚠️ Algoritma Hatası: Hesaplama için Tinkercad (.tinkercad) veya .STL / .OBJ uzantılı bir dosya seçmelisiniz.');
-                return;
-            }
-
-            // Real calculated slicing price based on ~65g mass simulation
-            const computedBasePrice = 185; 
-            const finalCalculatedCost = computedBasePrice * quantity;
-
-            if (confirm(`📊 Bambu Slicer Algoritma Analiz Raporu:\n──────────────────────────────\nDosya Adı: ${fileCheck.name}\nSeçilen Renk: ${color}\nAdet Sayısı: ${quantity}\n──────────────────────────────\nHesaplanan Toplam Üretim Maliyeti: ${finalCalculatedCost} TL.\n\nBu özel siparişi üretim kuyruğuna (Sepete) eklemek istiyor musunuz?`)) {
-                globalBasketMemory.push({ title: `Özel Tasarım [${fileCheck.name}] (${color} / x${quantity})`, cost: finalCalculatedCost });
-                synchronizeBasketCoreDOM();
-                toggleCartDrawer(true);
-            }
-        }
-
-        function toggleActiveLabContext(contextKey) {
-            globalLabContextKey = contextKey;
-            document.getElementById('lab-tab-animal').classList.toggle('active', contextKey === 'animal');
-            document.getElementById('lab-tab-team').classList.toggle('active', contextKey === 'team');
-            
-            document.getElementById('subform-animal-context').style.display = contextKey === 'animal' ? 'flex' : 'none';
-            document.getElementById('subform-team-context').style.display = contextKey === 'team' ? 'flex' : 'none';
-            
-            synchronizeSimulatorVisuals();
-        }
-
-        function synchronizeSimulatorVisuals() {
-            const node = document.getElementById('simulator-live-preview-node');
-            let basePrice = 0;
-            let baseTime = "0 Dk";
-            
-            if (globalLabContextKey === 'animal') {
-                const select = document.getElementById('select-animal-type');
-                const opt = select.options[select.selectedIndex];
-                node.innerText = select.value;
-                basePrice = parseFloat(opt.getAttribute('data-price'));
-                baseTime = opt.getAttribute('data-time');
-            } else {
-                const select = document.getElementById('select-team-type');
-                const opt = select.options[select.selectedIndex];
-                node.innerText = select.value;
-                basePrice = parseFloat(opt.getAttribute('data-price'));
-                baseTime = opt.getAttribute('data-time');
-            }
-
-            const infillModifier = parseFloat(document.getElementById('select-global-infill').value);
-            const finalCost = Math.round(basePrice * infillModifier);
-
-            document.getElementById('configurator-runtime-clock').innerText = baseTime;
-            document.getElementById('configurator-cost-label').innerText = finalCost;
-        }
-
-        function pushLabConfigToBasket() {
-            let label = "";
-            const infillText = document.getElementById('select-global-infill').options[document.getElementById('select-global-infill').selectedIndex].text.split(' ')[0];
-            const finalCost = parseFloat(document.getElementById('configurator-cost-label').innerText);
-
-            if (globalLabContextKey === 'animal') {
-                const el = document.getElementById('select-animal-type');
-                label = `Konfigüratör: ${el.options[el.selectedIndex].text.split('(')[0]} (${infillText})`;
-            } else {
-                const el = document.getElementById('select-team-type');
-                label = `Konfigüratör: ${el.options[el.selectedIndex].text.split('(')[0]} (${infillText})`;
-            }
-
-            globalBasketMemory.push({ title: label + " (Beta PLA)", cost: finalCost });
-            synchronizeBasketCoreDOM();
-            toggleCartDrawer(true);
-        }
-
-        function pushCatalogItemToBasket(itemId) {
-            const matchedProduct = productMasterRepository.find(p => p.id === itemId);
-            if (matchedProduct) {
-                globalBasketMemory.push({ title: `${matchedProduct.title}`, cost: matchedProduct.cost });
-                synchronizeBasketCoreDOM();
-            }
-        }
-
-        function dropBasketItemIndex(idx) {
-            globalBasketMemory.splice(idx, 1);
-            synchronizeBasketCoreDOM();
-        }
-
-        function applyPromoCouponCode() {
-            const code = document.getElementById('cart-coupon-field').value.trim().toUpperCase();
-            if (code === "BETA3D") {
-                appliedDiscountRate = 0.10; // 10% discount
-                document.getElementById('row-discount-node').style.display = 'flex';
-                alert('✓ Kupon Uygulandı: %10 Beta Filament özel indirimi sepetinize yansıtıldı.');
-                synchronizeBasketCoreDOM();
-            } else {
-                alert('⚠️ Geçersiz veya süresi dolmuş kupon kodu.');
-            }
-        }
-
-        function synchronizeBasketCoreDOM() {
-            document.getElementById('cart-counter-node').innerText = globalBasketMemory.length;
-            const targetStream = document.getElementById('cart-items-stream-injector');
-            
-            const subtotalLabel = document.getElementById('label-subtotal-cost');
-            const shippingLabel = document.getElementById('label-shipping-cost');
-            const discountLabel = document.getElementById('label-discount-cost');
-            const totalLabel = document.getElementById('cart-total-value-label');
-
-            if (globalBasketMemory.length === 0) {
-                targetStream.innerHTML = '<div style="color:var(--text-muted); text-align:center; margin-top:5rem; font-size:0.95rem;">Üretim kuyruğunda bekleyen parça bulunmuyor.</div>';
-                subtotalLabel.innerText = '0 TL';
-                shippingLabel.innerText = '0 TL';
-                totalLabel.innerText = '0 TL';
-                document.getElementById('row-discount-node').style.display = 'none';
-                appliedDiscountRate = 0.0;
-                return;
-            }
-
-            targetStream.innerHTML = '';
-            let subtotalAccumulator = 0;
-
-            globalBasketMemory.forEach((item, index) => {
-                subtotalAccumulator += item.cost;
-                const row = document.createElement('div');
-                row.style = 'display:flex; justify-content:space-between; align-items:center; background:var(--surface-secondary); padding:1.25rem; border-radius:10px; border:1px solid var(--border-glow);';
-                row.innerHTML = `
-                    <div style="max-width:85%;">
-                        <div style="font-weight:700; font-size:0.9rem; color:white; word-break:break-word;">${item.title}</div>
-                        <div style="color:var(--accent-emerald); font-size:0.9rem; font-weight:800; margin-top:0.25rem; font-family:monospace;">${item.cost} TL</div>
-                    </div>
-                    <button onclick="dropBasketItemIndex(${index})" style="background:transparent; border:none; color:#ef4444; font-size:1.6rem; cursor:pointer; padding: 0 0.5rem;">&times;</button>
-                `;
-                targetStream.appendChild(row);
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
             });
-
-            // Realistic Shipping Logic: Free shipping over 350 TL, else 45 TL.
-            let shippingCost = subtotalAccumulator >= 350 ? 0 : 45;
-            let discountCost = Math.round(subtotalAccumulator * appliedDiscountRate);
-            let absoluteTotal = (subtotalAccumulator + shippingCost) - discountCost;
-
-            subtotalLabel.innerText = subtotalAccumulator + ' TL';
-            shippingLabel.innerText = shippingCost === 0 ? 'Bedava' : shippingCost + ' TL';
-            discountLabel.innerText = '-' + discountCost + ' TL';
-            totalLabel.innerText = absoluteTotal + ' TL';
+            const targetSection = document.getElementById('page-' + pageId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
-        function executeCatalogFiltering(categoryKey, tabRef) {
-            activeFilterKeyword = categoryKey;
-            const chips = document.querySelectorAll('.filter-chip');
-            chips.forEach(c => c.classList.remove('active'));
-            tabRef.classList.add('active');
-            executeCatalogDOMRendering();
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('side-drawer');
+            drawer.classList.toggle('hidden');
         }
 
-        function executeCatalogDOMRendering() {
-            const targetGridNode = document.getElementById('catalog-grid-injector-node');
-            targetGridNode.innerHTML = '';
+        function addCustomProduct(productName, price, textInputId, colorSelectId) {
+            const customText = document.getElementById(textInputId).value.trim();
+            const colorValue = document.getElementById(colorSelectId).value;
+            
+            if(!customText) {
+                alert("Lütfen plaka/yazı metnini giriniz!");
+                return;
+            }
 
-            const filteredCollection = activeFilterKeyword === 'all' 
-                ? productMasterRepository 
-                : productMasterRepository.filter(p => p.category === activeFilterKeyword);
+            cart.push({ 
+                name: productName, 
+                price: price, 
+                details: `Yazı: "${customText}" | Renk: ${colorValue}` 
+            });
+            updateCartUI();
+            openCart();
+        }
 
-            filteredCollection.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'catalog-product-card';
-                card.innerHTML = `
-                    <div class="visual-frame-container">${p.icon}<span style="position:absolute; top:14px; right:14px; font-size:0.65rem; background:rgba(139,92,246,0.15); color:var(--accent-purple); padding:0.25rem 0.65rem; border-radius:10px; font-weight:700; border:1px solid rgba(139,92,246,0.2);">Beta PLA</span></div>
-                    <div class="product-body-content">
-                        <h3>${p.title}</h3>
-                        <p>${p.desc}</p>
-                        <div class="slicer-spec-badge">⏱️ ${p.time} | ⚖️ ${p.weight}</div>
-                        <div class="product-card-footer">
-                            <span class="currency-tag">${p.cost} TL</span>
-                            <button class="btn-add-cart" onclick="pushCatalogItemToBasket('${p.id}')">Kuyruğa Ekle</button>
+        function addStandardProduct(productName, price, colorSelectId) {
+            const colorValue = document.getElementById(colorSelectId).value;
+            cart.push({ 
+                name: productName, 
+                price: price, 
+                details: `Renk: ${colorValue}` 
+            });
+            updateCartUI();
+            openCart();
+        }
+
+        function updateCartUI() {
+            const cartBadge = document.getElementById('cart-badge');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartBadge.innerText = cart.length;
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-slate-400 text-xs text-center py-8">Sepetiniz henüz boş.</p>';
+                cartTotal.innerText = '0.00 ₺';
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItems.innerHTML += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center text-xs shadow-sm">
+                        <div>
+                            <h5 class="font-bold text-slate-800">${item.name}</h5>
+                            <p class="text-[10px] text-slate-500 mt-1">${item.details}</p>
+                            <span class="font-extrabold text-cyan-600 mt-1 block">${item.price.toFixed(2)} ₺</span>
                         </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 p-2 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
-                targetGridNode.appendChild(card);
             });
+            cartTotal.innerText = total.toFixed(2) + ' ₺';
         }
 
-        function updateInteractiveStarRating(scoreNum) {
-            globalSelectedStarValue = scoreNum;
-            const stars = document.querySelectorAll('#star-interactive-wrapper .interactive-star-node');
-            stars.forEach(s => {
-                const val = parseInt(s.getAttribute('data-value'));
-                s.classList.toggle('active', val <= scoreNum);
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function openCart() { document.getElementById('cart-modal').classList.remove('hidden'); }
+        function closeCart() { document.getElementById('cart-modal').classList.add('hidden'); }
+        function openAuth() { document.getElementById('auth-modal').classList.remove('hidden'); }
+        function closeAuth() { document.getElementById('auth-modal').classList.add('hidden'); }
+
+        function toggleChatbot() {
+            const box = document.getElementById('chatbot-box');
+            box.classList.toggle('hidden');
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Web Speech API Seslendirme Fonksiyonu
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Önceki seslendirmeyi durdur
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'tr-TR';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            const text = input.value.trim().toLowerCase();
+            if (!text) return;
+
+            messages.innerHTML += `<div class="bg-cyan-50 border border-cyan-200 p-3 rounded-2xl text-slate-800 text-right">${input.value}</div>`;
+            input.value = '';
+
+            setTimeout(() => {
+                let reply = "Bambu Lab A1 Mini ve Beta Filament baskılarımız hakkında her şeyi sorabilirsin!";
+
+                if (text.includes('plaka') || text.includes('yazı') || text.includes('metin')) {
+                    reply = "Özel plaka anahtarlığımızda dilediğiniz yazıyı yazabilir, 8 gramlık hafif yapısıyla sipariş verebilirsiniz.";
+                } else if (text.includes('gram') || text.includes('ağırlık')) {
+                    reply = "Ürün gramajlarımız: Özel Plaka Anahtarlık 8 gram, Fidget Yıldız 4 gram ve Fidget Kalp 6 gramdır.";
+                } else if (text.includes('süre') || text.includes('baskı')) {
+                    reply = "Baskı sürelerimiz ortalama 20 ile 35 dakika arasında değişmektedir.";
+                } else if (text.includes('fiyat') || text.includes('ücret')) {
+                    reply = "Tüm modellerimiz 99.99 Türk Lirası sabit fiyatla satıştadır.";
+                } else if (text.includes('merhaba') || text.includes('selam')) {
+                    reply = "Selam! Ben sesli asistanın FiloBot. Sana nasıl yardımcı olabilirim?";
+                }
+
+                messages.innerHTML += `<div class="bg-white border border-slate-100 p-3 rounded-2xl text-slate-700 leading-relaxed shadow-sm">${reply}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+                
+                // Cevabı sesli olarak oku
+                speakText(reply);
+            }, 600);
+        }
+
+        function simulateOrder() {
+            const steps = ['step-1', 'step-2', 'step-3', 'step-4'];
+            let current = 0;
+            steps.forEach(s => {
+                document.getElementById(s).className = "p-4 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm";
             });
-        }
-
-        function commitUserReviewToDatabase() {
-            const name = document.getElementById('review-input-author').value.trim();
-            const text = document.getElementById('review-input-text').value.trim();
-
-            if (!name || !text) {
-                alert('⚠️ Form Validasyon Hatası: İsim ve açıklama kısımları boş geçilemez.');
-                return;
-            }
-
-            let currentDb = JSON.parse(localStorage.getItem('labs_v110_reviews_db')) || prefilledSystemReviews;
-            currentDb.unshift({ author: name, score: globalSelectedStarValue, text: text });
-            localStorage.setItem('labs_v110_reviews_db', JSON.stringify(currentDb));
-            
-            renderFeedbackReviewsLogs(currentDb);
-
-            document.getElementById('review-input-author').value = '';
-            document.getElementById('review-input-text').value = '';
-            updateInteractiveStarRating(5);
-            alert('✓ İncelemeniz sisteme başarıyla loglandı!');
-        }
-
-        function initializeFeedbackDatabase() {
-            let currentDb = localStorage.getItem('labs_v110_reviews_db');
-            if (!currentDb) {
-                localStorage.setItem('labs_v110_reviews_db', JSON.stringify(prefilledSystemReviews));
-                currentDb = JSON.stringify(prefilledSystemReviews);
-            }
-            renderFeedbackReviewsLogs(JSON.parse(currentDb));
-        }
-
-        function renderFeedbackReviewsLogs(dataArray) {
-            const target = document.getElementById('comments-render-target');
-            target.innerHTML = '';
-
-            dataArray.forEach(item => {
-                let starStr = "★".repeat(item.score) + "☆".repeat(5 - item.score);
-                const block = document.createElement('div');
-                block.className = 'comment-node-card';
-                block.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; margin-bottom:0.5rem;">
-                        <span style="color:white;">${item.author}</span>
-                        <span style="color:var(--accent-amber);">${starStr}</span>
-                    </div>
-                    <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.4;">${item.text}</p>
-                `;
-                target.appendChild(block);
-            });
-        }
-
-        function toggleCartDrawer(state) {
-            document.getElementById('cart-drawer-sidebar').classList.toggle('open', state);
-        }
-
-        function invokeAuthModal(state) {
-            document.getElementById('auth-modal-overlay').classList.toggle('active', state === 'open');
-        }
-
-        function togglePaymentGatewayModal(state) {
-            if (state === 'open' && globalBasketMemory.length === 0) {
-                alert('Ödeme paneline geçebilmek için kuyrukta en az 1 parça bulunmalıdır.');
-                return;
-            }
-            document.getElementById('checkout-modal-overlay').classList.toggle('active', state === 'open');
-        }
-
-        function synchronizeBillingCardGraphics() {
-            let digits = document.getElementById('form-card-digits').value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            let owner = document.getElementById('form-card-owner').value;
-
-            let formatted = "";
-            for (let i = 0; i < digits.length; i++) {
-                if (i > 0 && i % 4 === 0) formatted += " ";
-                formatted += digits[i];
-            }
-            document.getElementById('form-card-digits').value = formatted;
-            document.getElementById('card-display-number').innerText = formatted || "•••• •••• •••• ••••";
-            document.getElementById('card-display-owner').innerText = owner.toUpperCase() || "MÜŞTERİ ADI";
-
-            const logo = document.getElementById('card-display-logo');
-            if (digits.startsWith('4')) logo.innerText = "VISA";
-            else if (digits.startsWith('5')) logo.innerText = "MASTERCARD";
-            else logo.innerText = "CARD";
-        }
-
-        function processFinalMonetaryTransaction() {
-            const digits = document.getElementById('form-card-digits').value.replace(/\s+/g, '');
-            const owner = document.getElementById('form-card-owner').value;
-
-            if (digits.length < 16 || !owner) {
-                alert('❌ Ödeme Onaylanmadı: Kart numarası veya kart sahibi eksik girildi.');
-                return;
-            }
-
-            alert('🔒 PCI-DSS 3D Secure doğrulaması başarıyla tamamlandı!\nGcode üretim dosyaları Bambu Lab A1 Mini donanım havuzuna kablosuz (Cloud WiFi) olarak iletildi.');
-            globalBasketMemory = [];
-            appliedDiscountRate = 0.0;
-            document.getElementById('row-discount-node').style.display = 'none';
-            synchronizeBasketCoreDOM();
-            togglePaymentGatewayModal('close');
-            toggleCartDrawer(false);
-        }
-
-        function processLocalAvatarImage(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    document.getElementById('avatar-image-node').src = evt.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
+            const interval = setInterval(() => {
+                if (current > 0) {
+                    document.getElementById(steps[current - 1]).className = "p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 transition";
+                }
+                if (current < steps.length) {
+                    document.getElementById(steps[current]).className = "p-4 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-700 transition animate-pulse";
+                    current++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1000);
         }
     </script>
 </body>
