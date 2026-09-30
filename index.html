@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Store by Bambu Lab and Beta Filament Versiyon 16.0 Açık Tema</title>
+    <title>3D Store by Bambu Lab and Beta Filament Versiyon 16.1 Açık Tema</title>
     
     <!-- External Frameworks & UI Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -12,7 +12,8 @@
     <!-- Firebase SDK (v10) CDN Imports -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -25,17 +26,29 @@
             measurementId: "G-EWS5V7CZZC"
         };
 
-        // Initialize Firebase & Firestore
+        // Initialize Firebase, Firestore & Auth
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
 
         // Global Firebase functions attached to window for app usage
         window.db = db;
+        window.auth = auth;
+        window.googleProvider = googleProvider;
         window.collection = collection;
         window.addDoc = addDoc;
         window.getDocs = getDocs;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
         window.query = query;
         window.orderBy = orderBy;
+        window.signInWithPopup = signInWithPopup;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
     </script>
 
     <!-- Custom Style Definitions -->
@@ -129,9 +142,9 @@
             <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent mb-3">3D Store</h1>
             <p class="text-sm md:text-base text-slate-400 font-medium tracking-widest uppercase">by Bambu Lab & Beta Filament</p>
             <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
-                <span>Versiyon 16.0</span>
+                <span>Versiyon 16.1</span>
             </div>
-            <p class="text-xs text-cyan-400/80 mt-8 animate-pulse"><i class="fa-solid fa-water mr-1"></i> Gerçek Ürün Fotoğraflarıyla Başlatılıyor...</p>
+            <p class="text-xs text-cyan-400/80 mt-8 animate-pulse"><i class="fa-solid fa-shield-halved mr-1"></i> Google Giriş & Düzenlenebilir Yorumlarla Başlatılıyor...</p>
         </div>
         <div id="ripple-circle" class="absolute rounded-full bg-cyan-400/40 pointer-events-none transition-all duration-1000 transform scale-0 left-1/2 top-1/2"></div>
     </div>
@@ -139,7 +152,7 @@
     <!-- TOP ANNOUNCEMENT HEADER BAR -->
     <div class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 text-xs py-2.5 px-4 text-center font-medium tracking-wide text-white flex justify-center items-center gap-2 shadow-md">
         <i class="fa-solid fa-cube animate-spin"></i> 
-        <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla <strong>Versiyon 16.0</strong> Gerçek Ürün Görselleriyle Yayında!</span>
+        <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla <strong>Versiyon 16.1</strong> Google İle Giriş Ve Güvenli Altyapısıyla Yayında!</span>
     </div>
 
     <!-- NAVIGATION BAR -->
@@ -154,7 +167,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">3D Store</h1>
-                    <p class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Versiyon 16.0 | Bambu Lab & Beta Filament</p>
+                    <p class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Versiyon 16.1 | Bambu Lab & Beta Filament</p>
                 </div>
             </div>
         </div>
@@ -175,8 +188,8 @@
                 <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow">0</span>
             </button>
             
-            <button onclick="openAuth()" id="user-auth-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-md shadow-cyan-600/20 cursor-pointer flex items-center gap-2">
-                <div id="user-avatar" class="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-extrabold uppercase">
+            <button onclick="handleAuthButtonClick()" id="user-auth-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-md shadow-cyan-600/20 cursor-pointer flex items-center gap-2">
+                <div id="user-avatar" class="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-extrabold uppercase overflow-hidden">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <span id="auth-btn-text">Giriş Yap</span>
@@ -222,7 +235,7 @@
                 </div>
             </div>
             <div class="pt-6 border-t border-slate-100 text-[11px] text-slate-400 text-center space-y-1">
-                <p class="font-bold text-slate-600">3D Store Versiyon 16.0</p>
+                <p class="font-bold text-slate-600">3D Store Versiyon 16.1</p>
                 <p>Bambu Lab & Beta Filament</p>
             </div>
         </div>
@@ -236,7 +249,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-8">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-600 text-xs font-bold mb-6">
-                        <i class="fa-solid fa-camera text-cyan-500"></i> Versiyon 16.0 (Gerçek Ürün Fotoğrafları)
+                        <i class="fa-solid fa-shield-halved text-cyan-500"></i> Versiyon 16.1 (Google Giriş & Güvenli Altyapı)
                     </div>
                     <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6 text-slate-900">
                         Özel Tasarım <br>
@@ -329,7 +342,7 @@
 
                         <div class="mb-4">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
-                            <select id="color-1" onchange="updateProductPrice(1, 99.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
+                            <select id="color-1" onchange="updateProductPrice(1, 49.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
                                 <option value="Beyaz">Beyaz</option>
                                 <option value="Siyah">Siyah</option>
                                 <option value="Gri">Gri</option>
@@ -345,9 +358,9 @@
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                         <div>
                             <span class="text-[10px] text-slate-400 block font-bold">FİYAT</span>
-                            <span id="price-1" class="text-xl font-extrabold text-cyan-600">99.99 ₺</span>
+                            <span id="price-1" class="text-xl font-extrabold text-cyan-600">49.99 ₺</span>
                         </div>
-                        <button onclick="addCustomProduct('Özel Plaka Anahtarlık', 99.99, 'custom-plate-text', 'color-1')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
+                        <button onclick="addCustomProduct('Özel Plaka Anahtarlık', 49.99, 'custom-plate-text', 'color-1')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
                             <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
                         </button>
                     </div>
@@ -371,7 +384,7 @@
 
                         <div class="mb-4">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
-                            <select id="color-2" onchange="updateProductPrice(2, 99.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
+                            <select id="color-2" onchange="updateProductPrice(2, 49.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
                                 <option value="Beyaz">Beyaz</option>
                                 <option value="Siyah">Siyah</option>
                                 <option value="Gri">Gri</option>
@@ -386,9 +399,9 @@
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                         <div>
                             <span class="text-[10px] text-slate-400 block font-bold">FİYAT</span>
-                            <span id="price-2" class="text-xl font-extrabold text-cyan-600">99.99 ₺</span>
+                            <span id="price-2" class="text-xl font-extrabold text-cyan-600">49.99 ₺</span>
                         </div>
-                        <button onclick="addStandardProduct('Fidget Yıldız', 99.99, 'color-2')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
+                        <button onclick="addStandardProduct('Fidget Yıldız', 49.99, 'color-2')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
                             <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
                         </button>
                     </div>
@@ -412,7 +425,7 @@
 
                         <div class="mb-4">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
-                            <select id="color-3" onchange="updateProductPrice(3, 99.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
+                            <select id="color-3" onchange="updateProductPrice(3, 49.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
                                 <option value="Beyaz">Beyaz</option>
                                 <option value="Siyah">Siyah</option>
                                 <option value="Gri">Gri</option>
@@ -426,9 +439,9 @@
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                         <div>
                             <span class="text-[10px] text-slate-400 block font-bold">FİYAT</span>
-                            <span id="price-3" class="text-xl font-extrabold text-cyan-600">99.99 ₺</span>
+                            <span id="price-3" class="text-xl font-extrabold text-cyan-600">49.99 ₺</span>
                         </div>
-                        <button onclick="addStandardProduct('Fidget Kalp', 99.99, 'color-3')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
+                        <button onclick="addStandardProduct('Fidget Kalp', 49.99, 'color-3')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
                             <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
                         </button>
                     </div>
@@ -516,7 +529,7 @@
                     <div id="step-4" class="p-5 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
                         <i class="fa-solid fa-box-open text-3xl mb-3"></i>
                         <h5 class="font-bold text-sm">4. Paket & Teslimat</h5>
-                        <p class="text-[11px] text-slate-400 mt-1">Son Kontrol & Okul Gönderimi</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Son Kontrol & Teslimat</p>
                     </div>
                 </div>
             </div>
@@ -525,14 +538,15 @@
         <!-- PAGE 5: REVIEWS & RATING SECTION -->
         <section id="page-reviews-section" class="page-section">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Add Review Form -->
+                <!-- Add / Edit Review Form -->
                 <div class="lg:col-span-1 light-panel p-6 rounded-3xl h-fit border border-slate-200/80">
-                    <h4 class="font-extrabold text-lg text-slate-900 mb-2 flex items-center gap-2">
+                    <h4 id="review-form-title" class="font-extrabold text-lg text-slate-900 mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-pen-to-square text-cyan-600"></i> Yorum Ekle
                     </h4>
-                    <p class="text-slate-500 text-xs mb-6">Yorum yazmak ve paylaşmak için giriş yapmanız gerekmektedir.</p>
+                    <p id="review-form-sub" class="text-slate-500 text-xs mb-6">Yorum yazmak ve paylaşmak için giriş yapmanız gerekmektedir.</p>
 
                     <form onsubmit="handleReviewSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="editing-review-id" value="">
                         <div>
                             <label class="text-xs font-bold text-slate-700 block mb-1">Satın Aldığınız Ürün:</label>
                             <select id="review-product" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
@@ -559,9 +573,14 @@
                             <textarea id="review-text" required rows="3" placeholder="Ürün kalitesi ve basım hakkındaki değerlendirmeleriniz..." class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md shadow-cyan-600/20 cursor-pointer flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Canlı Veritabanına Gönder
-                        </button>
+                        <div class="flex gap-2">
+                            <button type="submit" id="submit-review-btn" class="flex-1 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md shadow-cyan-600/20 cursor-pointer flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Yorumu Kaydet
+                            </button>
+                            <button type="button" id="cancel-edit-btn" onclick="resetReviewForm()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-3 rounded-xl text-xs transition cursor-pointer">
+                                İptal
+                            </button>
+                        </div>
                     </form>
                 </div>
 
@@ -585,7 +604,7 @@
                 <div class="light-panel p-8 rounded-3xl border border-slate-200/80">
                     <span class="text-xs font-bold uppercase tracking-wider text-pink-600 block mb-1">Bize Ulaşın</span>
                     <h3 class="text-2xl font-extrabold text-slate-900 mb-2">İletişim & Geri Bildirim</h3>
-                    <p class="text-slate-500 text-xs mb-6">Sorularınız, özel 3D modelleme istekleriniz veya okul siparişleriniz için formu doldurabilirsiniz.</p>
+                    <p class="text-slate-500 text-xs mb-6">Sorularınız, özel 3D modelleme istekleriniz veya toplu siparişleriniz için formu doldurabilirsiniz.</p>
 
                     <form onsubmit="handleContactSubmit(event)" class="space-y-4">
                         <div>
@@ -599,8 +618,8 @@
                         </div>
 
                         <div>
-                            <label class="text-xs font-bold text-slate-700 block mb-1">Konu / Sınıf:</label>
-                            <input type="text" id="contact-subject" placeholder="Örn: 5-A Sınıfı Özel Anahtarlık Siparişi" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Konu / Detay:</label>
+                            <input type="text" id="contact-subject" placeholder="Örn: Özel Anahtarlık Siparişi" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                         </div>
 
                         <div>
@@ -633,11 +652,11 @@
                         <div class="space-y-3">
                             <div class="border border-slate-200/80 rounded-2xl p-3.5 bg-white">
                                 <button onclick="toggleAccordion('faq-1')" class="w-full text-left font-bold text-xs text-slate-800 flex justify-between items-center cursor-pointer">
-                                    <span>Okul içi teslimatlar nasıl oluyor?</span>
+                                    <span>Siparişler nasıl teslim ediliyor?</span>
                                     <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
                                 </button>
                                 <div id="faq-1" class="accordion-content text-xs text-slate-500 mt-2 leading-relaxed">
-                                    Okulda verdiğiniz siparişler Bambu Lab A1 Mini ile basıldıktan sonra ertesi gün doğrudan sınıfınıza teslim edilir.
+                                    Siparişleriniz Bambu Lab A1 Mini ile basıldıktan sonra özenle paketlenip kısa sürede adresinize ulaştırılır.
                                 </div>
                             </div>
 
@@ -666,7 +685,7 @@
                         3D Store; Bambu Lab A1 Mini 3D yazıcı parkuru ve Beta Filament kalitesiyle özgün modelleri üreten teknoloji odaklı bir e-ticaret platformudur.
                     </p>
                     <p class="text-slate-500 text-xs leading-relaxed">
-                        <strong>Versiyon 16.0:</strong> Gerçek 3D ürün görselleri, canlı Firestore sipariş takibi ve akıllı FiloBot AI asistanı ile yenilenmiştir.
+                        <strong>Versiyon 16.1:</strong> Google ile Giriş Yap altyapısı, kullanıcı bazlı yorum düzenleme/silme hakları, güvenli HTTPS protokolü ve güncellenmiş akıllı FiloBot AI ile sunulmaktadır.
                     </p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -688,7 +707,7 @@
 
     <!-- FOOTER SECTION WITH LIVE VISITOR COUNTER -->
     <footer class="border-t border-slate-200 px-6 py-8 max-w-7xl mx-auto w-full text-center text-xs text-slate-500 mt-auto space-y-2">
-        <p>&copy; 2025-2026 <strong>3D Store by Bambu Lab & Beta Filament</strong>. Tüm hakları saklıdır. Versiyon 16.0 Açık Tema.</p>
+        <p>&copy; 2025-2026 <strong>3D Store by Bambu Lab & Beta Filament</strong>. Tüm hakları saklıdır. Versiyon 16.1 Açık Tema.</p>
         <p class="text-[11px] text-slate-400">İletişim: <a href="mailto:3dstore@gmail.com" class="underline hover:text-cyan-600">3dstore@gmail.com</a></p>
         
         <div class="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full text-[10px] text-slate-600 font-bold mt-2">
@@ -709,7 +728,7 @@
                     <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
                     <div>
                         <h5 class="font-extrabold text-xs text-slate-800">FiloBot AI</h5>
-                        <p class="text-[9px] text-slate-400 font-semibold">v16.0 Akıllı Asistan</p>
+                        <p class="text-[9px] text-slate-400 font-semibold">v16.1 Akıllı Asistan</p>
                     </div>
                 </div>
                 <button onclick="toggleChatbot()" class="text-slate-400 hover:text-slate-800 cursor-pointer w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-xmark"></i></button>
@@ -717,7 +736,7 @@
 
             <div id="chat-messages" class="p-4 flex-1 overflow-y-auto space-y-3 text-xs custom-scrollbar">
                 <div class="bg-white p-3.5 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed shadow-sm">
-                    Selam! Ben <strong>FiloBot AI</strong>. Bambu Lab A1 Mini ve Beta Filament modellerimiz hakkında her türlü sorunu sorabilirsin.
+                    Selam dostum! Ben <strong>FiloBot AI</strong>. Bambu Lab A1 Mini ve Beta Filament modellerimiz hakkında aklına takılan her şeyi sorabilirsin, hemen anlatayım!
                 </div>
             </div>
 
@@ -739,7 +758,7 @@
 
                 <div class="bg-cyan-50 p-3 rounded-2xl border border-cyan-200 mb-4 text-xs">
                     <div class="flex justify-between font-bold text-slate-700 mb-1">
-                        <span>Ücretsiz Kargo / Okul Teslimatı</span>
+                        <span>Ücretsiz Kargo Avantajı</span>
                         <span id="shipping-status">200 ₺ üzeri ücretsiz</span>
                     </div>
                     <div class="w-full bg-slate-200 rounded-full h-2">
@@ -764,7 +783,7 @@
                 </div>
 
                 <button onclick="checkout()" class="w-full bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg shadow-cyan-600/20 cursor-pointer transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane"></i> Siparişi Tamamla & Okul Teslimatına Gönder
+                    <i class="fa-solid fa-check"></i> Siparişi Tamamla
                 </button>
             </div>
         </div>
@@ -774,20 +793,51 @@
     <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="light-panel w-full max-w-md p-8 rounded-3xl relative shadow-2xl border border-slate-200">
             <button onclick="closeAuth()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 cursor-pointer w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="font-extrabold text-xl mb-1 text-center text-slate-900">3D Store Hesabı</h3>
-            <p class="text-slate-500 text-xs text-center mb-6">Sipariş vermek ve yorum yapmak için bilgilerinizi giriniz.</p>
             
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-700 block mb-1">Adınız Soyadınız / Sınıfınız:</label>
-                    <input type="text" id="auth-fullname" required placeholder="Örn: Ahmet Yılmaz (5-A)" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+            <h3 id="auth-modal-title" class="font-extrabold text-xl mb-1 text-center text-slate-900">3D Store Hesabı</h3>
+            <p id="auth-modal-sub" class="text-slate-500 text-xs text-center mb-6">Sipariş vermek ve yorumlarınızı yönetmek için giriş yapın.</p>
+            
+            <!-- Google Sign-In Button -->
+            <button onclick="loginWithGoogle()" class="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-xs transition shadow-sm mb-4 flex items-center justify-center gap-3 cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                Google ile Giriş Yap
+            </button>
+
+            <div class="relative my-4 text-center">
+                <hr class="border-slate-200">
+                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[10px] text-slate-400 uppercase font-bold">veya e-posta ile</span>
+            </div>
+
+            <!-- Email/Password Auth Form -->
+            <form id="email-auth-form" onsubmit="handleEmailAuth(event)" class="space-y-4">
+                <div id="fullname-field" class="hidden">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Adınız Soyadınız:</label>
+                    <input type="text" id="auth-fullname" placeholder="Ahmet Yılmaz" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                 </div>
                 <div>
                     <label class="text-xs font-bold text-slate-700 block mb-1">E-Posta Adresiniz:</label>
                     <input type="email" id="auth-email" required placeholder="ornek@mail.com" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                 </div>
-                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20">Giriş Yap / Profil Oluştur</button>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Şifreniz:</label>
+                    <input type="password" id="auth-password" required placeholder="******" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                </div>
+
+                <button type="submit" id="email-submit-btn" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20">
+                    Giriş Yap
+                </button>
             </form>
+
+            <div class="mt-4 text-center">
+                <button type="button" id="auth-toggle-mode-btn" onclick="toggleAuthMode()" class="text-xs font-bold text-cyan-600 hover:underline cursor-pointer">
+                    Hesabınız yok mu? Kayıt Olun
+                </button>
+            </div>
         </div>
     </div>
 
@@ -797,11 +847,14 @@
         let selectedRating = 5;
         let currentUser = null;
         let discountRate = 0;
+        let isSignUpMode = false;
+        let firestoreReviews = [];
 
         window.addEventListener('load', () => {
             loadFromLocalStorage();
             initVisitorCounter();
-            
+            setupAuthListener();
+
             setTimeout(() => {
                 fetchFirestoreReviews();
             }, 1000);
@@ -812,6 +865,27 @@
                 }
             }, 3200);
         });
+
+        function setupAuthListener() {
+            if (window.auth && window.onAuthStateChanged) {
+                window.onAuthStateChanged(window.auth, (user) => {
+                    if (user) {
+                        currentUser = {
+                            uid: user.uid,
+                            fullname: user.displayName || user.email.split('@')[0],
+                            email: user.email,
+                            photoURL: user.photoURL || null
+                        };
+                        localStorage.setItem('3dstore_user', JSON.stringify(currentUser));
+                    } else {
+                        currentUser = null;
+                        localStorage.removeItem('3dstore_user');
+                    }
+                    updateUserUI();
+                    fetchFirestoreReviews();
+                });
+            }
+        }
 
         function initVisitorCounter() {
             let count = localStorage.getItem('3dstore_visits') || 142;
@@ -998,7 +1072,7 @@
             }
 
             if (!currentUser) {
-                alert("Siparişi tamamlayabilmek için lütfen önce giriş yapın / adınızı belirtin!");
+                alert("Siparişi tamamlayabilmek için lütfen önce giriş yapın!");
                 closeCart();
                 openAuth();
                 return;
@@ -1011,6 +1085,7 @@
             try {
                 if (window.db && window.collection && window.addDoc) {
                     await window.addDoc(window.collection(window.db, "orders"), {
+                        userId: currentUser.uid || null,
                         customerName: currentUser.fullname,
                         customerEmail: currentUser.email,
                         items: cart,
@@ -1019,7 +1094,7 @@
                         createdAt: new Date()
                     });
 
-                    alert(`Harika ${currentUser.fullname}! Siparişiniz alındı ve doğrudan Firebase veritabanına aktarıldı. Bambu Lab A1 Mini basımı için sıraya alındı!`);
+                    alert(`Harika ${currentUser.fullname}! Siparişiniz başarıyla alındı ve Bambu Lab A1 Mini basımı için sıraya eklendi.`);
                     cart = [];
                     saveToLocalStorage();
                     updateCartUI();
@@ -1035,6 +1110,105 @@
         function closeCart() { document.getElementById('cart-modal').classList.add('hidden'); }
         function openAuth() { document.getElementById('auth-modal').classList.remove('hidden'); }
         function closeAuth() { document.getElementById('auth-modal').classList.add('hidden'); }
+
+        function handleAuthButtonClick() {
+            if (currentUser) {
+                if (confirm(`${currentUser.fullname} hesabından çıkış yapmak istediğinize emin misiniz?`)) {
+                    if (window.auth && window.signOut) {
+                        window.signOut(window.auth);
+                    } else {
+                        currentUser = null;
+                        localStorage.removeItem('3dstore_user');
+                        updateUserUI();
+                        fetchFirestoreReviews();
+                    }
+                }
+            } else {
+                openAuth();
+            }
+        }
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            const title = document.getElementById('auth-modal-title');
+            const submitBtn = document.getElementById('email-submit-btn');
+            const toggleBtn = document.getElementById('auth-toggle-mode-btn');
+            const fullnameField = document.getElementById('fullname-field');
+
+            if (isSignUpMode) {
+                title.innerText = "Yeni Hesap Oluştur";
+                submitBtn.innerText = "Kayıt Ol";
+                toggleBtn.innerText = "Zaten hesabınız var mı? Giriş Yapın";
+                fullnameField.classList.remove('hidden');
+            } else {
+                title.innerText = "3D Store Hesabı";
+                submitBtn.innerText = "Giriş Yap";
+                toggleBtn.innerText = "Hesabınız yok mu? Kayıt Olun";
+                fullnameField.classList.add('hidden');
+            }
+        }
+
+        async function loginWithGoogle() {
+            try {
+                if (window.auth && window.googleProvider && window.signInWithPopup) {
+                    const result = await window.signInWithPopup(window.auth, window.googleProvider);
+                    const user = result.user;
+                    currentUser = {
+                        uid: user.uid,
+                        fullname: user.displayName || "Google Kullanıcısı",
+                        email: user.email,
+                        photoURL: user.photoURL
+                    };
+                    localStorage.setItem('3dstore_user', JSON.stringify(currentUser));
+                    updateUserUI();
+                    closeAuth();
+                    fetchFirestoreReviews();
+                    alert(`Hoş geldin ${currentUser.fullname}! Google hesabı ile giriş yapıldı.`);
+                }
+            } catch (err) {
+                console.error("Google giriş hatası: ", err);
+                alert("Google ile giriş yapılırken bir hata oluştu: " + err.message);
+            }
+        }
+
+        async function handleEmailAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const fullname = document.getElementById('auth-fullname').value;
+
+            try {
+                if (isSignUpMode) {
+                    if (window.auth && window.createUserWithEmailAndPassword) {
+                        const userCred = await window.createUserWithEmailAndPassword(window.auth, email, password);
+                        currentUser = {
+                            uid: userCred.user.uid,
+                            fullname: fullname || email.split('@')[0],
+                            email: email
+                        };
+                        localStorage.setItem('3dstore_user', JSON.stringify(currentUser));
+                        alert("Hesabınız başarıyla oluşturuldu!");
+                    }
+                } else {
+                    if (window.auth && window.signInWithEmailAndPassword) {
+                        const userCred = await window.signInWithEmailAndPassword(window.auth, email, password);
+                        currentUser = {
+                            uid: userCred.user.uid,
+                            fullname: userCred.user.displayName || email.split('@')[0],
+                            email: email
+                        };
+                        localStorage.setItem('3dstore_user', JSON.stringify(currentUser));
+                        alert("Başarıyla giriş yapıldı!");
+                    }
+                }
+                updateUserUI();
+                closeAuth();
+                fetchFirestoreReviews();
+            } catch (err) {
+                console.error("Auth hatası: ", err);
+                alert("İşlem sırasında hata oluştu: " + err.message);
+            }
+        }
 
         function filterProducts() {
             const query = document.getElementById('product-search').value.toLowerCase();
@@ -1072,25 +1246,79 @@
 
             const product = document.getElementById('review-product').value;
             const text = document.getElementById('review-text').value;
+            const editingId = document.getElementById('editing-review-id').value;
 
             try {
-                if (window.db && window.collection && window.addDoc) {
-                    await window.addDoc(window.collection(window.db, "comments"), {
-                        author: currentUser.fullname,
-                        initials: getInitials(currentUser.fullname),
-                        product: product,
-                        rating: selectedRating,
-                        text: text,
-                        createdAt: new Date()
-                    });
-                    
-                    document.getElementById('review-text').value = '';
-                    alert("Yorumunuz canlı Firestore veritabanına kaydedildi!");
+                if (window.db && window.collection) {
+                    if (editingId) {
+                        const reviewRef = window.doc(window.db, "comments", editingId);
+                        await window.updateDoc(reviewRef, {
+                            product: product,
+                            rating: selectedRating,
+                            text: text,
+                            updatedAt: new Date()
+                        });
+                        alert("Yorumunuz güncellendi!");
+                    } else {
+                        await window.addDoc(window.collection(window.db, "comments"), {
+                            userId: currentUser.uid || currentUser.email,
+                            author: currentUser.fullname,
+                            authorEmail: currentUser.email,
+                            initials: getInitials(currentUser.fullname),
+                            product: product,
+                            rating: selectedRating,
+                            text: text,
+                            createdAt: new Date()
+                        });
+                        alert("Yorumunuz kaydedildi!");
+                    }
+
+                    resetReviewForm();
                     fetchFirestoreReviews();
                 }
             } catch (err) {
                 console.error("Firestore kaydetme hatası: ", err);
                 alert("Yorum kaydedilirken bir hata oluştu!");
+            }
+        }
+
+        function resetReviewForm() {
+            document.getElementById('review-text').value = '';
+            document.getElementById('editing-review-id').value = '';
+            document.getElementById('review-form-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-cyan-600"></i> Yorum Ekle';
+            document.getElementById('submit-review-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Yorumu Kaydet';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            setRating(5);
+        }
+
+        function editReview(reviewId) {
+            const review = firestoreReviews.find(r => r.id === reviewId);
+            if (!review) return;
+
+            document.getElementById('editing-review-id').value = review.id;
+            document.getElementById('review-product').value = review.product;
+            document.getElementById('review-text').value = review.text;
+            setRating(review.rating);
+
+            document.getElementById('review-form-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-cyan-600"></i> Yorumu Düzenle';
+            document.getElementById('submit-review-btn').innerHTML = '<i class="fa-solid fa-check"></i> Yorumu Güncelle';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            window.scrollTo({ top: document.getElementById('page-reviews-section').offsetTop, behavior: 'smooth' });
+        }
+
+        async function deleteReview(reviewId) {
+            if (!confirm("Bu yorumu silmek istediğinize emin misiniz?")) return;
+
+            try {
+                if (window.db && window.deleteDoc && window.doc) {
+                    await window.deleteDoc(window.doc(window.db, "comments", reviewId));
+                    alert("Yorumunuz silindi.");
+                    fetchFirestoreReviews();
+                }
+            } catch (err) {
+                console.error("Yorum silme hatası: ", err);
+                alert("Yorum silinirken hata oluştu.");
             }
         }
 
@@ -1112,19 +1340,43 @@
                     }
 
                     container.innerHTML = '';
-                    querySnapshot.forEach((doc) => {
-                        const r = doc.data();
+                    firestoreReviews = [];
+
+                    querySnapshot.forEach((docSnap) => {
+                        const r = docSnap.data();
+                        r.id = docSnap.id;
+                        firestoreReviews.push(r);
+
                         let starsHtml = '';
                         for (let i = 0; i < 5; i++) {
                             starsHtml += `<i class="fa-solid fa-star ${i < r.rating ? 'text-yellow-400' : 'text-slate-200'}"></i>`;
                         }
 
+                        const isOwner = currentUser && (
+                            (currentUser.uid && r.userId === currentUser.uid) ||
+                            (currentUser.email && r.authorEmail === currentUser.email) ||
+                            (currentUser.email && r.userId === currentUser.email)
+                        );
+
+                        const ownerActions = isOwner ? `
+                            <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100 justify-end">
+                                <button onclick="editReview('${r.id}')" class="text-xs font-bold text-cyan-600 hover:text-cyan-700 p-1 cursor-pointer flex items-center gap-1">
+                                    <i class="fa-solid fa-pen"></i> Düzenle
+                                </button>
+                                <button onclick="deleteReview('${r.id}')" class="text-xs font-bold text-red-500 hover:text-red-600 p-1 cursor-pointer flex items-center gap-1">
+                                    <i class="fa-solid fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        ` : '';
+
                         container.innerHTML += `
                             <div class="light-panel p-5 rounded-2xl border border-slate-200/80 shadow-sm">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-full bg-cyan-600 text-white font-extrabold flex items-center justify-center text-xs shadow">
-                                            ${r.initials || getInitials(r.author)}
+                                        <div class="w-9 h-9 rounded-full bg-cyan-600 text-white font-extrabold flex items-center justify-center text-xs shadow overflow-hidden">
+                                            ${r.authorEmail && currentUser && r.authorEmail === currentUser.email && currentUser.photoURL ? 
+                                                `<img src="${currentUser.photoURL}" class="w-full h-full object-cover">` : 
+                                                (r.initials || getInitials(r.author))}
                                         </div>
                                         <div>
                                             <h5 class="font-bold text-xs text-slate-800">${r.author}</h5>
@@ -1134,6 +1386,7 @@
                                     <div class="text-xs flex gap-0.5">${starsHtml}</div>
                                 </div>
                                 <p class="text-slate-600 text-xs leading-relaxed">${r.text}</p>
+                                ${ownerActions}
                             </div>
                         `;
                     });
@@ -1158,22 +1411,20 @@
             el.classList.toggle('open');
         }
 
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const fullname = document.getElementById('auth-fullname').value;
-            const email = document.getElementById('auth-email').value;
-
-            currentUser = { fullname, email };
-            localStorage.setItem('3dstore_user', JSON.stringify(currentUser));
-            updateUserUI();
-            closeAuth();
-        }
-
         function updateUserUI() {
+            const avatarEl = document.getElementById('user-avatar');
+            const authTextEl = document.getElementById('auth-btn-text');
+
             if (currentUser) {
-                const initials = getInitials(currentUser.fullname);
-                document.getElementById('user-avatar').innerText = initials;
-                document.getElementById('auth-btn-text').innerText = currentUser.fullname.split(' ')[0];
+                if (currentUser.photoURL) {
+                    avatarEl.innerHTML = `<img src="${currentUser.photoURL}" class="w-full h-full object-cover">`;
+                } else {
+                    avatarEl.innerText = getInitials(currentUser.fullname);
+                }
+                authTextEl.innerText = currentUser.fullname.split(' ')[0];
+            } else {
+                avatarEl.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                authTextEl.innerText = "Giriş Yap";
             }
         }
 
@@ -1205,11 +1456,11 @@
             input.value = '';
 
             setTimeout(() => {
-                let reply = "FiloBot AI v16.0 aktif! Sorunuzu anlayamadım ancak mağaza ürünleri, renk seçenekleri, fiyatlar veya kargo hakkında soru sorabilirsiniz.";
+                let reply = "Selam! FiloBot AI v16.1 aktif! Sorduğun soruyu tam anlayamadım ama mağaza ürünleri, renk seçenekleri, fiyatlar veya kargo hakkında ne zaman istersen sorabilirsin.";
 
                 if (text.includes('gram') || text.includes('ağırlık') || text.includes('kilo')) {
                     if (text.includes('plaka') || text.includes('anahtarlık')) {
-                        reply = "Özel Plaka Anahtarlık modelimiz tam 8 gram ağırlığındadır.";
+                        reply = "Özel Plaka Anahtarlık modelimiz tam 8 gram ağırlığındadır kanka.";
                     } else if (text.includes('yıldız')) {
                         reply = "Fidget Yıldız modelimiz 4 gram ağırlığındadır.";
                     } else if (text.includes('kalp')) {
@@ -1219,12 +1470,12 @@
                     }
                 } 
                 else if (text.includes('renkler kaç') || text.includes('renk fiyatı') || text.includes('renk farkı') || text.includes('ücretli mi')) {
-                    reply = "Siyah, Beyaz ve Gri renklerimiz standart ve ücretsizdir. Kırmızı, Yeşil, Sarı, Azur Mavisi ve Koyu Mavi renklerimiz ise +15 ₺ farkla sunulmaktadır.";
+                    reply = "Siyah, Beyaz ve Gri renklerimiz standart ve ücretsizdir dostum. Kırmızı, Yeşil, Sarı, Azur Mavisi ve Koyu Mavi renklerimiz ise +15 ₺ farkla sunulmaktadır.";
                 } else if (text.includes('renk') || text.includes('hangi renk')) {
                     reply = "Mevcut renk seçeneklerimiz: Beyaz, Siyah, Gri, Azur Mavisi, Kırmızı, Yeşil, Sarı ve Koyu Mavi polimerleridir.";
                 } 
                 else if (text.includes('fiyat') || text.includes('kaç para') || text.includes('ücret') || text.includes('maliyet')) {
-                    reply = "Tüm temel modellerimizin (Plaka Anahtarlık, Fidget Yıldız, Fidget Kalp) başlangıç fiyatı standart renklerle 99.99 ₺'dir.";
+                    reply = "Süper soru! Tüm temel modellerimizin başlangıç fiyatı standart renklerle tam 49.99 ₺'dir.";
                 }
                 else if (text.includes('süre') || text.includes('dakika') || text.includes('kaç dk') || text.includes('zaman')) {
                     if (text.includes('plaka')) {
@@ -1243,13 +1494,13 @@
                     reply = "Tüm baskılarımızda yüksek mukavemetli ve kaliteli Beta Filament PLA hammaddesi kullanılmaktadır.";
                 }
                 else if (text.includes('iletişim') || text.includes('mail') || text.includes('eposta') || text.includes('ulaş')) {
-                    reply = "Bize 3dstore@gmail.com e-posta adresimizden doğrudan mesaj atabilir veya sitemizdeki İletişim formunu kullanabilirsiniz.";
+                    reply = "Bize 3dstore@gmail.com e-posta adresimizden doğrudan mesaj atabilir veya sitemizdeki İletişim formunu kullanabilirsin.";
                 }
-                else if (text.includes('kargo') || text.includes('teslimat') || text.includes('okul') || text.includes('nasıl gelecek')) {
-                    reply = "Siparişleriniz akşam basıldıktan sonra ertesi gün doğrudan okula getirilip sınıfınıza teslim edilmektedir. 200 ₺ üzeri siparişlerde kargo ücretsizdir.";
+                else if (text.includes('kargo') || text.includes('teslimat') || text.includes('nasıl gelecek')) {
+                    reply = "Siparişleriniz akşam basıldıktan sonra özenle paketlenip teslimata çıkarılır. 200 ₺ üzeri siparişlerde kargo ücretsizdir.";
                 }
                 else if (text.includes('merhaba') || text.includes('selam') || text.includes('nasılsın') || text.includes('saol')) {
-                    reply = "Selam! Ben 3D Store akıllı asistanı FiloBot AI. Bambu Lab A1 Mini üretimi modellerimiz hakkında soru sorabilirsiniz.";
+                    reply = "Selam dostum! Ben 3D Store akıllı asistanı FiloBot AI. Modellerimiz hakkında aklına takılan her şeyi sorabilirsin!";
                 }
 
                 messages.innerHTML += `<div class="bg-white border border-slate-100 p-3.5 rounded-2xl text-slate-700 leading-relaxed shadow-sm">${reply}</div>`;
