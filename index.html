@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Store by Bambu Lab and Beta Filament Versiyon 16.1 Açık Tema</title>
+    <title>3D Store by Bambu Lab and Beta Filament Versiyon 16.4</title>
     
+    <!-- FAVICON (Site Logosunu Google & Sekmelerde Gösterme) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+
     <!-- External Frameworks & UI Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,8 +17,8 @@
     <!-- Firebase SDK (v10) CDN Imports -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -32,7 +37,7 @@
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
 
-        // Global Firebase functions attached to window for app usage
+        // Global Firebase functions attached to window
         window.db = db;
         window.auth = auth;
         window.googleProvider = googleProvider;
@@ -43,10 +48,16 @@
         window.updateDoc = updateDoc;
         window.deleteDoc = deleteDoc;
         window.query = query;
+        window.where = where;
+        window.limit = limit;
         window.orderBy = orderBy;
         window.signInWithPopup = signInWithPopup;
         window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
         window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.sendPasswordResetEmail = sendPasswordResetEmail;
+        window.setPersistence = setPersistence;
+        window.browserLocalPersistence = browserLocalPersistence;
+        window.browserSessionPersistence = browserSessionPersistence;
         window.signOut = signOut;
         window.onAuthStateChanged = onAuthStateChanged;
     </script>
@@ -136,15 +147,15 @@
     <div id="intro-overlay" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center text-white transition-all duration-1000 cursor-pointer overflow-hidden" onclick="dismissIntro()">
         <div class="absolute inset-0 bg-cyan-500/10 rounded-full filter blur-3xl animate-pulse"></div>
         <div id="intro-logo-content" class="relative z-10 text-center p-8 transition-transform duration-700">
-            <div class="w-28 h-28 mx-auto mb-6 rounded-3xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-5xl font-bold shadow-2xl animate-bounce">
-                <i class="fa-solid fa-print"></i>
+            <div class="w-28 h-28 mx-auto mb-6 rounded-3xl bg-slate-900 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-5xl font-bold shadow-2xl animate-bounce overflow-hidden">
+                <img src="logo.png" alt="3D Store Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-print text-cyan-400\"></i>';">
             </div>
             <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent mb-3">3D Store</h1>
             <p class="text-sm md:text-base text-slate-400 font-medium tracking-widest uppercase">by Bambu Lab & Beta Filament</p>
             <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
-                <span>Versiyon 16.1</span>
+                <span>Versiyon 16.4</span>
             </div>
-            <p class="text-xs text-cyan-400/80 mt-8 animate-pulse"><i class="fa-solid fa-shield-halved mr-1"></i> Google Giriş & Güvenli Altyapıyla Başlatılıyor...</p>
+            <p class="text-xs text-cyan-400/80 mt-8 animate-pulse"><i class="fa-solid fa-sparkles mr-1"></i> Beni Hatırla Seçeneği & Şifre Sıfırlama Altyapısıyla Açılıyor...</p>
         </div>
         <div id="ripple-circle" class="absolute rounded-full bg-cyan-400/40 pointer-events-none transition-all duration-1000 transform scale-0 left-1/2 top-1/2"></div>
     </div>
@@ -152,43 +163,39 @@
     <!-- TOP ANNOUNCEMENT HEADER BAR -->
     <div class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 text-xs py-2.5 px-4 text-center font-medium tracking-wide text-white flex justify-center items-center gap-2 shadow-md">
         <i class="fa-solid fa-cube animate-spin"></i> 
-        <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla <strong>Versiyon 16.1</strong> Google İle Giriş Ve Güvenli Altyapısıyla Yayında!</span>
+        <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla <strong>Versiyon 16.4</strong> Kurumsal Sürüm Yayında!</span>
     </div>
 
     <!-- NAVIGATION BAR -->
-    <header class="sticky top-0 z-40 light-panel border-b border-slate-200/80 px-6 py-4 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-4">
-            <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-cyan-600 text-xl transition focus:outline-none cursor-pointer p-2 rounded-lg hover:bg-slate-100">
+    <header class="sticky top-0 z-40 light-panel border-b border-slate-200/80 px-4 sm:px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-cyan-600 text-xl transition focus:outline-none cursor-pointer p-2 rounded-xl hover:bg-slate-100 flex items-center gap-2">
                 <i class="fa-solid fa-bars"></i>
+                <span class="text-xs font-extrabold uppercase tracking-wider hidden sm:inline-block">Menü</span>
             </button>
             <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('home')">
-                <div class="w-11 h-11 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-2xl font-bold shadow-sm">
-                    <i class="fa-solid fa-print"></i>
+                <div class="w-10 h-10 rounded-2xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-xl font-bold shadow-sm overflow-hidden">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-print text-cyan-500\"></i>';">
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">3D Store</h1>
-                    <p class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Versiyon 16.1 | Bambu Lab & Beta Filament</p>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">3D Store</h1>
+                    <p class="text-[9px] sm:text-[10px] text-slate-500 font-bold tracking-widest uppercase">Versiyon 16.4</p>
                 </div>
             </div>
         </div>
 
-        <nav class="hidden lg:flex items-center gap-7 text-xs font-bold text-slate-600 uppercase tracking-wider">
-            <button onclick="switchPage('home')" id="nav-home" class="hover:text-cyan-600 transition text-cyan-600 cursor-pointer py-1 border-b-2 border-cyan-600">Tanıtım</button>
-            <button onclick="switchPage('products')" id="nav-products" class="hover:text-cyan-600 transition cursor-pointer py-1 border-b-2 border-transparent">Modeller & Mağaza</button>
-            <button onclick="switchPage('filament-lab')" id="nav-filament-lab" class="hover:text-cyan-600 transition cursor-pointer py-1 border-b-2 border-transparent">Filament Lab</button>
-            <button onclick="switchPage('live-tracker')" id="nav-live-tracker" class="hover:text-cyan-600 transition cursor-pointer py-1 border-b-2 border-transparent">Canlı Üretim</button>
-            <button onclick="switchPage('reviews-section')" id="nav-reviews-section" class="hover:text-cyan-600 transition cursor-pointer py-1 border-b-2 border-transparent">Yorumlar</button>
-            <button onclick="switchPage('contact')" id="nav-contact" class="hover:text-cyan-600 transition cursor-pointer py-1 border-b-2 border-transparent">İletişim</button>
-            <button onclick="switchPage('about-us')" id="nav-about-us" class="hover:text-cyan-600 transition cursor-pointer py-1 border-b-2 border-transparent">Hakkımızda</button>
-        </nav>
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button onclick="switchPage('live-tracker')" class="hidden sm:flex items-center gap-2 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 text-cyan-700 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer">
+                <i class="fa-solid fa-truck-fast text-cyan-600"></i>
+                <span>Sipariş Takibi</span>
+            </button>
 
-        <div class="flex items-center gap-3">
             <button onclick="openCart()" class="relative bg-white border border-slate-200 hover:border-cyan-500 p-2.5 rounded-xl text-slate-700 transition shadow-sm cursor-pointer hover:bg-slate-50">
                 <i class="fa-solid fa-cart-shopping text-base"></i>
                 <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow">0</span>
             </button>
             
-            <button onclick="handleAuthButtonClick()" id="user-auth-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-md shadow-cyan-600/20 cursor-pointer flex items-center gap-2">
+            <button onclick="handleAuthButtonClick()" id="user-auth-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3.5 sm:px-4 py-2 rounded-xl text-xs transition shadow-md shadow-cyan-600/20 cursor-pointer flex items-center gap-2">
                 <div id="user-avatar" class="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-extrabold uppercase overflow-hidden">
                     <i class="fa-solid fa-user"></i>
                 </div>
@@ -197,14 +204,14 @@
         </div>
     </header>
 
-    <!-- SIDEBAR NAVIGATION DRAWER -->
+    <!-- SIDEBAR NAVIGATION DRAWER (Sol Çekmece Menü) -->
     <div id="side-drawer" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex justify-start transition-opacity">
         <div class="w-80 bg-white h-full border-r border-slate-200 p-6 flex flex-col justify-between shadow-2xl">
             <div>
                 <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-base font-bold">
-                            <i class="fa-solid fa-bars-staggered"></i>
+                        <div class="w-9 h-9 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-base font-bold overflow-hidden">
+                            <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-bars-staggered text-cyan-500\"></i>';">
                         </div>
                         <h3 class="font-extrabold text-base text-slate-800">Gezinti Menüsü</h3>
                     </div>
@@ -221,10 +228,10 @@
                         <i class="fa-solid fa-palette w-5 text-emerald-600 text-sm"></i> Filament Renk Labı
                     </button>
                     <button onclick="switchPage('live-tracker'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
-                        <i class="fa-solid fa-timeline w-5 text-indigo-600 text-sm"></i> Canlı Üretim Takibi
+                        <i class="fa-solid fa-truck-fast w-5 text-indigo-600 text-sm"></i> Canlı Üretim & Kargo
                     </button>
                     <button onclick="switchPage('reviews-section'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
-                        <i class="fa-solid fa-star w-5 text-yellow-500 text-sm"></i> Müşteri Yorumları & Değerlendirme
+                        <i class="fa-solid fa-star w-5 text-yellow-500 text-sm"></i> Müşteri Yorumları
                     </button>
                     <button onclick="switchPage('contact'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-600 transition flex items-center gap-3 cursor-pointer">
                         <i class="fa-solid fa-envelope w-5 text-pink-600 text-sm"></i> İletişim & Geri Bildirim
@@ -235,7 +242,7 @@
                 </div>
             </div>
             <div class="pt-6 border-t border-slate-100 text-[11px] text-slate-400 text-center space-y-1">
-                <p class="font-bold text-slate-600">3D Store Versiyon 16.1</p>
+                <p class="font-bold text-slate-600">3D Store Versiyon 16.4</p>
                 <p>Bambu Lab & Beta Filament</p>
             </div>
         </div>
@@ -246,16 +253,16 @@
 
         <!-- PAGE 1: HOME SECTION -->
         <section id="page-home" class="page-section active">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-4 sm:py-8">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-600 text-xs font-bold mb-6">
-                        <i class="fa-solid fa-shield-halved text-cyan-500"></i> Versiyon 16.1 (Google Giriş & Güvenli Altyapı)
+                        <i class="fa-solid fa-sparkles text-cyan-500"></i> Versiyon 16.4 (Geliştirilmiş Kurumsal Yapı)
                     </div>
-                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6 text-slate-900">
+                    <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6 text-slate-900">
                         Özel Tasarım <br>
                         <span class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">3D Baskı Aksesuarları</span>
                     </h2>
-                    <p class="text-slate-600 text-base sm:text-lg mb-8 leading-relaxed font-normal">
+                    <p class="text-slate-600 text-sm sm:text-base mb-8 leading-relaxed font-normal">
                         Bambu Lab A1 Mini hassasiyeti ve Beta Filament yüksek kalitesiyle üretilen kişiselleştirilebilir plaka anahtarlıklar, katmanlı fidget modelleri ve özel tasarımlar sizlerle.
                     </p>
                     <div class="flex flex-wrap gap-4">
@@ -268,7 +275,7 @@
                     </div>
                 </div>
 
-                <div class="light-panel p-8 rounded-3xl relative overflow-hidden shadow-xl border border-slate-200/80">
+                <div class="light-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-xl border border-slate-200/80">
                     <div class="flex justify-between items-center mb-6">
                         <span class="text-xs font-bold uppercase tracking-wider text-cyan-600 flex items-center gap-2">
                             <i class="fa-solid fa-bullhorn"></i> Vitrin Paneli
@@ -278,11 +285,11 @@
                         </span>
                     </div>
 
-                    <div class="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-8 border border-slate-100 text-center mb-6 shadow-sm">
-                        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-600 text-4xl">
-                            <i class="fa-solid fa-print"></i>
+                    <div class="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-6 sm:p-8 border border-slate-100 text-center mb-6 shadow-sm">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-3xl sm:text-4xl shadow overflow-hidden">
+                            <img src="logo.png" alt="3D Store Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-print text-cyan-500\"></i>';">
                         </div>
-                        <h3 class="font-extrabold text-xl mb-2 text-slate-800">Bambu Lab A1 Mini Mimarisi</h3>
+                        <h3 class="font-extrabold text-lg sm:text-xl mb-2 text-slate-800">Bambu Lab A1 Mini Mimarisi</h3>
                         <p class="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
                             Tüm siparişleriniz katman hassasiyeti ayarlanmış özel yazıcı parkurumuzda basılmaktadır.
                         </p>
@@ -291,23 +298,23 @@
                     <div class="grid grid-cols-2 gap-4 text-xs">
                         <div class="bg-white p-4 rounded-2xl border border-slate-100 text-center shadow-sm">
                             <span class="text-slate-400 block mb-1 font-semibold">3D Yazıcı Altyapısı</span>
-                            <span class="font-extrabold text-cyan-600 text-sm">Bambu A1 Mini</span>
+                            <span class="font-extrabold text-cyan-600 text-xs sm:text-sm">Bambu A1 Mini</span>
                         </div>
                         <div class="bg-white p-4 rounded-2xl border border-slate-100 text-center shadow-sm">
                             <span class="text-slate-400 block mb-1 font-semibold">Hammadde Standartı</span>
-                            <span class="font-extrabold text-purple-600 text-sm">Beta Filament</span>
+                            <span class="font-extrabold text-purple-600 text-xs sm:text-sm">Beta Filament</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 2: PRODUCTS CATALOG SECTION WITH REAL IMAGES -->
+        <!-- PAGE 2: PRODUCTS CATALOG SECTION -->
         <section id="page-products" class="page-section">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-4 border-b border-slate-200">
                 <div>
                     <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">3D Ürün Koleksiyonu</h3>
-                    <p class="text-slate-500 text-xs sm:text-sm mt-1">Gerçek basım fotoğraflarıyla modellerimizi inceleyin ve sipariş verin.</p>
+                    <p class="text-slate-500 text-xs sm:text-sm mt-1">Modellerimizi inceleyin ve dilediğiniz filament rengiyle sipariş verin.</p>
                 </div>
 
                 <div class="flex items-center gap-3 w-full md:w-auto">
@@ -319,40 +326,40 @@
             </div>
 
             <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Product 1: Özel Plaka Anahtarlık (Real Photo: plaka.png) -->
+                <!-- Product 1: Özel Plaka Anahtarlık (49.99 TL) -->
                 <div class="product-card light-panel light-panel-hover rounded-3xl p-6 flex flex-col justify-between" data-name="Özel Plaka Anahtarlık">
                     <div>
-                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex items-center justify-center">
-                            <img src="plaka.png" alt="Özel Plaka Anahtarlık Gerçek Baskı" class="w-full h-full object-cover rounded-2xl hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Plaka+Anahtarl%C4%B1k';">
+                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fa-solid fa-id-card text-5xl text-cyan-600 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-700">Özel Plaka Anahtarlık</span>
+                            <span class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı Görselleri Yakında Güncellenecektir</span>
                             <span class="absolute top-3 right-3 bg-cyan-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">8 Gram</span>
-                            <span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-semibold px-2 py-0.5 rounded-md"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı</span>
                         </div>
                         <h4 class="font-extrabold text-lg mb-1 text-slate-800">Özel Plaka Anahtarlık</h4>
                         <p class="text-slate-500 text-xs mb-3 leading-relaxed">Kişiselleştirilebilir kabartmalı plaka ve metin detaylı anahtarlık.</p>
-                        
-                        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 bg-slate-50 p-2.5 rounded-xl mb-4 border border-slate-200/80">
-                            <span><i class="fa-solid fa-clock text-cyan-600 mr-1"></i> Baskı: ~35 dk</span>
-                            <span><i class="fa-solid fa-layer-group text-purple-600 mr-1"></i> Beta PLA</span>
-                        </div>
 
                         <div class="mb-3">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Plaka / Yazı Metni:</label>
                             <input type="text" id="custom-plate-text" placeholder="Örn: 34 KEREM 06" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
                             <select id="color-1" onchange="updateProductPrice(1, 49.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
-                                <option value="Beyaz">Beyaz</option>
-                                <option value="Siyah">Siyah</option>
-                                <option value="Gri">Gri</option>
-                                <option value="Azur Mavisi">Azur Mavisi (+15 ₺)</option>
-                                <option value="Kırmızı">Kırmızı (+15 ₺)</option>
-                                <option value="Yeşil">Yeşil (+15 ₺)</option>
-                                <option value="Sarı">Sarı (+15 ₺)</option>
-                                <option value="Koyu Mavi">Koyu Mavi (+15 ₺)</option>
+                                <option value="Gri (800m)">Gri (800m)</option>
+                                <option value="Beyaz (800m)">Beyaz (800m)</option>
+                                <option value="Siyah (800m)">Siyah (800m)</option>
+                                <option value="Turkuaz (750m)">Turkuaz (750m) (+15 ₺)</option>
+                                <option value="Lacivert (600m)">Lacivert (600m) (+15 ₺)</option>
+                                <option value="Sarı (950m)">Sarı (950m) (+15 ₺)</option>
+                                <option value="Kırmızı (900m)">Kırmızı (900m) (+15 ₺)</option>
+                                <option value="Yeşil (850m)">Yeşil (850m) (+15 ₺)</option>
+                                <option value="Pembe (700m)">Pembe (700m) (+15 ₺)</option>
+                                <option value="Kahverengi (650m)">Kahverengi (650m) (+15 ₺)</option>
+                                <option value="Mor (750m)">Mor (750m) (+15 ₺)</option>
                             </select>
                         </div>
+                        <p id="selected-color-label-1" class="text-[11px] font-bold text-emerald-600 mb-4 h-4">✔ Seçildi: Gri (800m)</p>
                     </div>
 
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
@@ -366,34 +373,35 @@
                     </div>
                 </div>
 
-                <!-- Product 2: Fidget Yıldız (Real Photo: yildiz.jpg) -->
+                <!-- Product 2: Fidget Yıldız (49.99 TL) -->
                 <div class="product-card light-panel light-panel-hover rounded-3xl p-6 flex flex-col justify-between" data-name="Fidget Yıldız">
                     <div>
-                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex items-center justify-center">
-                            <img src="yildiz.jpg" alt="Fidget Yıldız Gerçek Baskı" class="w-full h-full object-cover rounded-2xl hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Fidget+Y%C4%B1ld%C4%B1z';">
+                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fa-solid fa-star text-5xl text-purple-600 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-700">Fidget Yıldız</span>
+                            <span class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı Görselleri Yakında Güncellenecektir</span>
                             <span class="absolute top-3 right-3 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">4 Gram</span>
-                            <span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-semibold px-2 py-0.5 rounded-md"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı</span>
                         </div>
                         <h4 class="font-extrabold text-lg mb-1 text-slate-800">Fidget Yıldız</h4>
                         <p class="text-slate-500 text-xs mb-3 leading-relaxed">İç içe geçen katmanlı stres ve odaklanma oyuncağı.</p>
 
-                        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 bg-slate-50 p-2.5 rounded-xl mb-4 border border-slate-200/80">
-                            <span><i class="fa-solid fa-clock text-cyan-600 mr-1"></i> Baskı: ~20 dk</span>
-                            <span><i class="fa-solid fa-layer-group text-purple-600 mr-1"></i> Beta PLA</span>
-                        </div>
-
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
                             <select id="color-2" onchange="updateProductPrice(2, 49.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
-                                <option value="Beyaz">Beyaz</option>
-                                <option value="Siyah">Siyah</option>
-                                <option value="Gri">Gri</option>
-                                <option value="Azur Mavisi">Azur Mavisi (+15 ₺)</option>
-                                <option value="Kırmızı">Kırmızı (+15 ₺)</option>
-                                <option value="Yeşil">Yeşil (+15 ₺)</option>
-                                <option value="Sarı">Sarı (+15 ₺)</option>
+                                <option value="Gri (800m)">Gri (800m)</option>
+                                <option value="Beyaz (800m)">Beyaz (800m)</option>
+                                <option value="Siyah (800m)">Siyah (800m)</option>
+                                <option value="Turkuaz (750m)">Turkuaz (750m) (+15 ₺)</option>
+                                <option value="Lacivert (600m)">Lacivert (600m) (+15 ₺)</option>
+                                <option value="Sarı (950m)">Sarı (950m) (+15 ₺)</option>
+                                <option value="Kırmızı (900m)">Kırmızı (900m) (+15 ₺)</option>
+                                <option value="Yeşil (850m)">Yeşil (850m) (+15 ₺)</option>
+                                <option value="Pembe (700m)">Pembe (700m) (+15 ₺)</option>
+                                <option value="Kahverengi (650m)">Kahverengi (650m) (+15 ₺)</option>
+                                <option value="Mor (750m)">Mor (750m) (+15 ₺)</option>
                             </select>
                         </div>
+                        <p id="selected-color-label-2" class="text-[11px] font-bold text-emerald-600 mb-4 h-4">✔ Seçildi: Gri (800m)</p>
                     </div>
 
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
@@ -407,33 +415,35 @@
                     </div>
                 </div>
 
-                <!-- Product 3: Fidget Kalp (Real Photo: kalp.jpg) -->
+                <!-- Product 3: Fidget Kalp (49.99 TL) -->
                 <div class="product-card light-panel light-panel-hover rounded-3xl p-6 flex flex-col justify-between" data-name="Fidget Kalp">
                     <div>
-                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex items-center justify-center">
-                            <img src="kalp.jpg" alt="Fidget Kalp Gerçek Baskı" class="w-full h-full object-cover rounded-2xl hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Fidget+Kalp';">
+                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fa-solid fa-heart text-5xl text-pink-600 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-700">Fidget Kalp</span>
+                            <span class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı Görselleri Yakında Güncellenecektir</span>
                             <span class="absolute top-3 right-3 bg-pink-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">6 Gram</span>
-                            <span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-semibold px-2 py-0.5 rounded-md"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı</span>
                         </div>
                         <h4 class="font-extrabold text-lg mb-1 text-slate-800">Fidget Kalp</h4>
                         <p class="text-slate-500 text-xs mb-3 leading-relaxed">Haraketli iç halkalara sahip şık tasarımlı fidget aksesuarı.</p>
 
-                        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 bg-slate-50 p-2.5 rounded-xl mb-4 border border-slate-200/80">
-                            <span><i class="fa-solid fa-clock text-cyan-600 mr-1"></i> Baskı: ~28 dk</span>
-                            <span><i class="fa-solid fa-layer-group text-purple-600 mr-1"></i> Beta PLA</span>
-                        </div>
-
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
                             <select id="color-3" onchange="updateProductPrice(3, 49.99)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
-                                <option value="Beyaz">Beyaz</option>
-                                <option value="Siyah">Siyah</option>
-                                <option value="Gri">Gri</option>
-                                <option value="Azur Mavisi">Azur Mavisi (+15 ₺)</option>
-                                <option value="Kırmızı">Kırmızı (+15 ₺)</option>
-                                <option value="Yeşil">Yeşil (+15 ₺)</option>
+                                <option value="Gri (800m)">Gri (800m)</option>
+                                <option value="Beyaz (800m)">Beyaz (800m)</option>
+                                <option value="Siyah (800m)">Siyah (800m)</option>
+                                <option value="Turkuaz (750m)">Turkuaz (750m) (+15 ₺)</option>
+                                <option value="Lacivert (600m)">Lacivert (600m) (+15 ₺)</option>
+                                <option value="Sarı (950m)">Sarı (950m) (+15 ₺)</option>
+                                <option value="Kırmızı (900m)">Kırmızı (900m) (+15 ₺)</option>
+                                <option value="Yeşil (850m)">Yeşil (850m) (+15 ₺)</option>
+                                <option value="Pembe (700m)">Pembe (700m) (+15 ₺)</option>
+                                <option value="Kahverengi (650m)">Kahverengi (650m) (+15 ₺)</option>
+                                <option value="Mor (750m)">Mor (750m) (+15 ₺)</option>
                             </select>
                         </div>
+                        <p id="selected-color-label-3" class="text-[11px] font-bold text-emerald-600 mb-4 h-4">✔ Seçildi: Gri (800m)</p>
                     </div>
 
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
@@ -442,6 +452,90 @@
                             <span id="price-3" class="text-xl font-extrabold text-cyan-600">49.99 ₺</span>
                         </div>
                         <button onclick="addStandardProduct('Fidget Kalp', 49.99, 'color-3')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4: Fidget Ahtapot (99.00 TL) -->
+                <div class="product-card light-panel light-panel-hover rounded-3xl p-6 flex flex-col justify-between" data-name="Fidget Ahtapot">
+                    <div>
+                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fa-solid fa-spaghetti-monster-flying text-5xl text-indigo-600 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-700">Fidget Ahtapot</span>
+                            <span class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı Görselleri Yakında Güncellenecektir</span>
+                            <span class="absolute top-3 right-3 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">12 Gram</span>
+                        </div>
+                        <h4 class="font-extrabold text-lg mb-1 text-slate-800">Fidget Ahtapot</h4>
+                        <p class="text-slate-500 text-xs mb-3 leading-relaxed">Eklemli hareketli kollara sahip eğlenceli 3D ahtapot modeli.</p>
+
+                        <div class="mb-2">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
+                            <select id="color-4" onchange="updateProductPrice(4, 99.00)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
+                                <option value="Gri (800m)">Gri (800m)</option>
+                                <option value="Beyaz (800m)">Beyaz (800m)</option>
+                                <option value="Siyah (800m)">Siyah (800m)</option>
+                                <option value="Turkuaz (750m)">Turkuaz (750m) (+15 ₺)</option>
+                                <option value="Lacivert (600m)">Lacivert (600m) (+15 ₺)</option>
+                                <option value="Sarı (950m)">Sarı (950m) (+15 ₺)</option>
+                                <option value="Kırmızı (900m)">Kırmızı (900m) (+15 ₺)</option>
+                                <option value="Yeşil (850m)">Yeşil (850m) (+15 ₺)</option>
+                                <option value="Pembe (700m)">Pembe (700m) (+15 ₺)</option>
+                                <option value="Kahverengi (650m)">Kahverengi (650m) (+15 ₺)</option>
+                                <option value="Mor (750m)">Mor (750m) (+15 ₺)</option>
+                            </select>
+                        </div>
+                        <p id="selected-color-label-4" class="text-[11px] font-bold text-emerald-600 mb-4 h-4">✔ Seçildi: Gri (800m)</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block font-bold">FİYAT</span>
+                            <span id="price-4" class="text-xl font-extrabold text-cyan-600">99.00 ₺</span>
+                        </div>
+                        <button onclick="addStandardProduct('Fidget Ahtapot', 99.00, 'color-4')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 5: Fidget Dumpling (99.00 TL) -->
+                <div class="product-card light-panel light-panel-hover rounded-3xl p-6 flex flex-col justify-between" data-name="Fidget Dumpling">
+                    <div>
+                        <div class="w-full h-52 rounded-2xl bg-slate-100 border border-slate-200 mb-5 relative overflow-hidden shadow-inner flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fa-solid fa-cookie-bite text-5xl text-emerald-600 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-700">Fidget Dumpling</span>
+                            <span class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-camera mr-1"></i> Gerçek Baskı Görselleri Yakında Güncellenecektir</span>
+                            <span class="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow">10 Gram</span>
+                        </div>
+                        <h4 class="font-extrabold text-lg mb-1 text-slate-800">Fidget Dumpling</h4>
+                        <p class="text-slate-500 text-xs mb-3 leading-relaxed">Katmanlı mantı/dumpling formunda rahatlatıcı stres aksesuarı.</p>
+
+                        <div class="mb-2">
+                            <label class="text-xs font-bold text-slate-700 block mb-1">Filament Renk Seçimi:</label>
+                            <select id="color-5" onchange="updateProductPrice(5, 99.00)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm cursor-pointer">
+                                <option value="Gri (800m)">Gri (800m)</option>
+                                <option value="Beyaz (800m)">Beyaz (800m)</option>
+                                <option value="Siyah (800m)">Siyah (800m)</option>
+                                <option value="Turkuaz (750m)">Turkuaz (750m) (+15 ₺)</option>
+                                <option value="Lacivert (600m)">Lacivert (600m) (+15 ₺)</option>
+                                <option value="Sarı (950m)">Sarı (950m) (+15 ₺)</option>
+                                <option value="Kırmızı (900m)">Kırmızı (900m) (+15 ₺)</option>
+                                <option value="Yeşil (850m)">Yeşil (850m) (+15 ₺)</option>
+                                <option value="Pembe (700m)">Pembe (700m) (+15 ₺)</option>
+                                <option value="Kahverengi (650m)">Kahverengi (650m) (+15 ₺)</option>
+                                <option value="Mor (750m)">Mor (750m) (+15 ₺)</option>
+                            </select>
+                        </div>
+                        <p id="selected-color-label-5" class="text-[11px] font-bold text-emerald-600 mb-4 h-4">✔ Seçildi: Gri (800m)</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block font-bold">FİYAT</span>
+                            <span id="price-5" class="text-xl font-extrabold text-cyan-600">99.00 ₺</span>
+                        </div>
+                        <button onclick="addStandardProduct('Fidget Dumpling', 99.00, 'color-5')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20 flex items-center gap-2">
                             <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
                         </button>
                     </div>
@@ -455,82 +549,83 @@
                 <span class="text-xs font-bold uppercase tracking-wider text-cyan-600 mb-2 block">Beta Filament Hammadde</span>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-3">Filament Renk Laboratuvarı</h3>
                 <p class="text-slate-500 text-xs sm:text-sm">
-                    Beta Filament renk koleksiyonu ile basılan modellerimizin polimer detayları.
+                    Beta Filament renk koleksiyonu ile basılan modellerimizin ortalama makara metraj detayları.
                 </p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-red-400 transition">
-                    <div class="w-12 h-12 rounded-full bg-red-500 mx-auto mb-3 shadow-md border-2 border-white"></div>
-                    <h4 class="font-bold text-xs text-slate-800">Kırmızı</h4>
-                </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-emerald-400 transition">
-                    <div class="w-12 h-12 rounded-full bg-emerald-500 mx-auto mb-3 shadow-md border-2 border-white"></div>
-                    <h4 class="font-bold text-xs text-slate-800">Yeşil</h4>
-                </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-yellow-400 transition">
-                    <div class="w-12 h-12 rounded-full bg-yellow-400 mx-auto mb-3 shadow-md border-2 border-white"></div>
-                    <h4 class="font-bold text-xs text-slate-800">Sarı</h4>
-                </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-slate-400 transition">
-                    <div class="w-12 h-12 rounded-full bg-slate-400 mx-auto mb-3 shadow-md border-2 border-white"></div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-11 gap-3">
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-slate-400 mx-auto mb-2 shadow border-2 border-white"></div>
                     <h4 class="font-bold text-xs text-slate-800">Gri</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">800 Metre</span>
                 </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-sky-400 transition">
-                    <div class="w-12 h-12 rounded-full bg-sky-500 mx-auto mb-3 shadow-md border-2 border-white"></div>
-                    <h4 class="font-bold text-xs text-slate-800">Azur Mavisi</h4>
-                </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-blue-700 transition">
-                    <div class="w-12 h-12 rounded-full bg-blue-800 mx-auto mb-3 shadow-md border-2 border-white"></div>
-                    <h4 class="font-bold text-xs text-slate-800">Koyu Mavi</h4>
-                </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-slate-300 transition">
-                    <div class="w-12 h-12 rounded-full bg-white border border-slate-200 mx-auto mb-3 shadow-md"></div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-white border border-slate-200 mx-auto mb-2 shadow"></div>
                     <h4 class="font-bold text-xs text-slate-800">Beyaz</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">800 Metre</span>
                 </div>
-                <div class="light-panel p-5 rounded-2xl text-center shadow-sm hover:border-slate-900 transition">
-                    <div class="w-12 h-12 rounded-full bg-slate-900 mx-auto mb-3 shadow-md border-2 border-white"></div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-slate-900 mx-auto mb-2 shadow border-2 border-white"></div>
                     <h4 class="font-bold text-xs text-slate-800">Siyah</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">800 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-cyan-400 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Turkuaz</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">750 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-blue-900 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Lacivert</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">600 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-yellow-400 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Sarı</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">950 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-red-500 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Kırmızı</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">900 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Yeşil</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">850 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm border border-pink-200">
+                    <div class="w-10 h-10 rounded-full bg-pink-400 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Pembe</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">700 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm border border-amber-200">
+                    <div class="w-10 h-10 rounded-full bg-amber-800 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Kahverengi</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">650 Metre</span>
+                </div>
+                <div class="light-panel p-4 rounded-2xl text-center shadow-sm border border-purple-200">
+                    <div class="w-10 h-10 rounded-full bg-purple-600 mx-auto mb-2 shadow border-2 border-white"></div>
+                    <h4 class="font-bold text-xs text-slate-800">Mor</h4>
+                    <span class="text-[9px] text-slate-400 font-semibold block mt-1">750 Metre</span>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 4: LIVE PRODUCTION TRACKER -->
+        <!-- PAGE 4: LIVE PRODUCTION & CARGO TRACKER -->
         <section id="page-live-tracker" class="page-section">
             <div class="light-panel p-8 md:p-12 rounded-3xl border border-slate-200/80">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                     <div>
                         <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-timeline text-cyan-600"></i> Canlı Üretim & Sipariş Süreci Takibi
+                            <i class="fa-solid fa-truck-fast text-cyan-600"></i> Canlı Sipariş & Kargo Takip Paneli
                         </h3>
-                        <p class="text-slate-500 text-xs mt-1">Bambu Lab A1 Mini üzerindeki basım ve teslimat adımlarını canlı simüle edin.</p>
+                        <p class="text-slate-500 text-xs mt-1">Firebase veritabanınızdaki aktif sipariş durumunuz anlık olarak burada görüntülenir.</p>
                     </div>
-                    <button onclick="simulateOrder()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-md shadow-indigo-600/30 cursor-pointer flex items-center gap-2">
-                        <i class="fa-solid fa-play"></i> Süreç Simülasyonunu Başlat
-                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-                    <div id="step-1" class="p-5 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-700 transition">
-                        <i class="fa-solid fa-file-code text-3xl mb-3"></i>
-                        <h5 class="font-bold text-sm">1. CAD & Model</h5>
-                        <p class="text-[11px] text-slate-500 mt-1">Tinkercad / Model Hazırlık</p>
-                    </div>
-                    <div id="step-2" class="p-5 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
-                        <i class="fa-solid fa-scissors text-3xl mb-3"></i>
-                        <h5 class="font-bold text-sm">2. Bambu Studio</h5>
-                        <p class="text-[11px] text-slate-400 mt-1">Dilimleme & G-code</p>
-                    </div>
-                    <div id="step-3" class="p-5 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
-                        <i class="fa-solid fa-print text-3xl mb-3"></i>
-                        <h5 class="font-bold text-sm">3. Tabla Baskısı</h5>
-                        <p class="text-[11px] text-slate-400 mt-1">Beta Filament Katmanlama</p>
-                    </div>
-                    <div id="step-4" class="p-5 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm">
-                        <i class="fa-solid fa-box-open text-3xl mb-3"></i>
-                        <h5 class="font-bold text-sm">4. Paket & Teslimat</h5>
-                        <p class="text-[11px] text-slate-400 mt-1">Son Kontrol & Teslimat</p>
-                    </div>
+                <div id="live-order-tracking-box">
+                    <p class="text-xs text-slate-400 text-center py-8">Sipariş durumunuz kontrol ediliyor...</p>
                 </div>
             </div>
         </section>
@@ -538,7 +633,6 @@
         <!-- PAGE 5: REVIEWS & RATING SECTION -->
         <section id="page-reviews-section" class="page-section">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Add / Edit Review Form -->
                 <div class="lg:col-span-1 light-panel p-6 rounded-3xl h-fit border border-slate-200/80">
                     <h4 id="review-form-title" class="font-extrabold text-lg text-slate-900 mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-pen-to-square text-cyan-600"></i> Yorum Ekle
@@ -553,6 +647,8 @@
                                 <option value="Özel Plaka Anahtarlık">Özel Plaka Anahtarlık</option>
                                 <option value="Fidget Yıldız">Fidget Yıldız</option>
                                 <option value="Fidget Kalp">Fidget Kalp</option>
+                                <option value="Fidget Ahtapot">Fidget Ahtapot</option>
+                                <option value="Fidget Dumpling">Fidget Dumpling</option>
                                 <option value="Genel Hizmet">Genel Hizmet & Kargo</option>
                             </select>
                         </div>
@@ -584,7 +680,6 @@
                     </form>
                 </div>
 
-                <!-- Live Reviews Display List (Firestore) -->
                 <div class="lg:col-span-2">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-2xl font-extrabold text-slate-900">Müşteri Değerlendirmeleri</h3>
@@ -677,27 +772,56 @@
 
         <!-- PAGE 7: ABOUT US SECTION -->
         <section id="page-about-us" class="page-section">
-            <div class="light-panel p-8 md:p-12 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center border border-slate-200/80">
+            <div class="light-panel p-8 md:p-12 rounded-3xl border border-slate-200/80 space-y-8">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-wider text-cyan-600 block mb-2"><i class="fa-solid fa-building-shield"></i> Hakkımızda</span>
-                    <h3 class="text-2xl md:text-3xl font-extrabold mb-4 text-slate-900">Yenilikçi 3D Baskı Girişimi</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                        3D Store; Bambu Lab A1 Mini 3D yazıcı parkuru ve Beta Filament kalitesiyle özgün modelleri üreten teknoloji odaklı bir e-ticaret platformudur.
-                    </p>
-                    <p class="text-slate-500 text-xs leading-relaxed">
-                        <strong>Versiyon 16.1:</strong> Google ile Giriş Yap altyapısı, kullanıcı bazlı yorum düzenleme/silme hakları, güvenli HTTPS protokolü ve güncellenmiş akıllı FiloBot AI ile sunulmaktadır.
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4">3D Store by Bambu Lab & Beta Filament</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>3D Store</strong>, yüksek hassasiyetli 3D baskı teknolojisini özgün ve kişiselleştirilebilir tasarımlarla buluşturan yeni nesil bir e-ticaret platformudur. Amacımız; sıradan ve seri üretim ürünler yerine, masanızda, anahtarlığınızda veya evinizde fark yaratacak özel 3D aksesuarları en yüksek kalite standartlarında sizlere ulaştırmaktır.
                     </p>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 text-center shadow-sm">
-                        <i class="fa-solid fa-print text-4xl text-cyan-600 mb-3"></i>
-                        <h5 class="font-bold text-sm mb-1 text-slate-800">A1 Mini Gücü</h5>
-                        <p class="text-[11px] text-slate-500">Hassas Üretim</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 flex items-center justify-center text-2xl font-bold shrink-0">
+                            <i class="fa-solid fa-print"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-slate-800 mb-1">Bambu Lab A1 Mini Parkuru</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed">Endüstriyel seviyede mikron hassasiyetli katman kalitesi ve pürüzsüz yüzey standartı sağlayan özel yazıcı parkurumuz.</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 text-center shadow-sm">
-                        <i class="fa-solid fa-atom text-4xl text-purple-600 mb-3"></i>
-                        <h5 class="font-bold text-sm mb-1 text-slate-800">Beta Filament</h5>
-                        <p class="text-[11px] text-slate-500">Yüksek Kalite</p>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-2xl font-bold shrink-0">
+                            <i class="fa-solid fa-atom"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-slate-800 mb-1">Orijinal Beta Filament Kalitesi</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed">Yüksek mukavemetli, çevre dostu ve canlı renk doygunluğuna sahip Beta PLA polimerleri kullanılmaktadır.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-100">
+                    <h4 class="font-extrabold text-base text-slate-900 mb-4">Bizi Farklı Kılan 4 Temel İlke</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <span class="font-bold text-cyan-600 block mb-1">1. Canlı Takip (`S001`)</span>
+                            <p class="text-slate-500">Yazıcının tablasındaki basım aşamasından kargoya kadar canlı süreç.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <span class="font-bold text-purple-600 block mb-1">2. Sıfır Hata Basım</span>
+                            <p class="text-slate-500">Doğrudan koda aktarılan plaka metinleriyle yanlış basım riski yoktur.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <span class="font-bold text-emerald-600 block mb-1">3. Şeffaf Metraj</span>
+                            <p class="text-slate-500">Tüm renk seçeneklerinde Beta Filament makara metrajları açıkça sunulur.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <span class="font-bold text-indigo-600 block mb-1">4. Doğrudan Fiyat</span>
+                            <p class="text-slate-500">Pazaryeri komisyonları olmadan doğrudan üreticiden en uygun maliyet.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -705,9 +829,9 @@
 
     </main>
 
-    <!-- FOOTER SECTION WITH LIVE VISITOR COUNTER -->
+    <!-- FOOTER SECTION -->
     <footer class="border-t border-slate-200 px-6 py-8 max-w-7xl mx-auto w-full text-center text-xs text-slate-500 mt-auto space-y-2">
-        <p>&copy; 2025-2026 <strong>3D Store by Bambu Lab & Beta Filament</strong>. Tüm hakları saklıdır. Versiyon 16.1 Açık Tema.</p>
+        <p>&copy; 2025-2026 <strong>3D Store by Bambu Lab & Beta Filament</strong>. Tüm hakları saklıdır. Versiyon 16.4.</p>
         <p class="text-[11px] text-slate-400">İletişim: <a href="mailto:3dstore.resmi@gmail.com" class="underline hover:text-cyan-600">3dstore.resmi@gmail.com</a></p>
         
         <div class="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full text-[10px] text-slate-600 font-bold mt-2">
@@ -716,7 +840,7 @@
         </div>
     </footer>
 
-    <!-- FILOBOT AI ASSISTANT CHATBOT WIDGET -->
+    <!-- FILOBOT AI CHATBOT WIDGET -->
     <div class="fixed bottom-6 right-6 z-40">
         <button onclick="toggleChatbot()" class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-600 to-indigo-600 text-white flex items-center justify-center text-2xl shadow-xl shadow-cyan-600/30 hover:scale-110 transition cursor-pointer">
             <i class="fa-solid fa-robot"></i>
@@ -728,7 +852,7 @@
                     <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
                     <div>
                         <h5 class="font-extrabold text-xs text-slate-800">FiloBot AI</h5>
-                        <p class="text-[9px] text-slate-400 font-semibold">v16.1 Akıllı Asistan</p>
+                        <p class="text-[9px] text-slate-400 font-semibold">v16.4 Akıllı Asistan</p>
                     </div>
                 </div>
                 <button onclick="toggleChatbot()" class="text-slate-400 hover:text-slate-800 cursor-pointer w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-xmark"></i></button>
@@ -736,7 +860,7 @@
 
             <div id="chat-messages" class="p-4 flex-1 overflow-y-auto space-y-3 text-xs custom-scrollbar">
                 <div class="bg-white p-3.5 rounded-2xl border border-slate-100 text-slate-700 leading-relaxed shadow-sm">
-                    Selam dostum! Ben <strong>FiloBot AI</strong>. Bambu Lab A1 Mini ve Beta Filament modellerimiz hakkında aklına takılan her şeyi sorabilirsin, hemen anlatayım!
+                    Selam dostum! Ben <strong>FiloBot AI</strong>. Bambu Lab A1 Mini ve Beta Filament modellerimiz hakkında aklına takılan her şeyi sorabilirsin!
                 </div>
             </div>
 
@@ -767,7 +891,6 @@
                 </div>
 
                 <div id="cart-items" class="space-y-3 overflow-y-auto max-h-[45vh] custom-scrollbar pr-1">
-                    <!-- Cart Items -->
                 </div>
             </div>
 
@@ -789,15 +912,14 @@
         </div>
     </div>
 
-    <!-- USER AUTHENTICATION MODAL -->
+    <!-- USER AUTHENTICATION MODAL (Giriş / Kayıt / Şifremi Unuttum) -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="light-panel w-full max-w-md p-8 rounded-3xl relative shadow-2xl border border-slate-200">
             <button onclick="closeAuth()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 cursor-pointer w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-xmark text-lg"></i></button>
             
             <h3 id="auth-modal-title" class="font-extrabold text-xl mb-1 text-center text-slate-900">3D Store Hesabı</h3>
-            <p id="auth-modal-sub" class="text-slate-500 text-xs text-center mb-6">Sipariş vermek ve yorumlarınızı yönetmek için giriş yapın.</p>
+            <p id="auth-modal-sub" class="text-slate-500 text-xs text-center mb-6">Sipariş vermek ve kargonuzu takip etmek için giriş yapın.</p>
             
-            <!-- Google Sign-In Button -->
             <button onclick="loginWithGoogle()" class="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl text-xs transition shadow-sm mb-4 flex items-center justify-center gap-3 cursor-pointer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -813,7 +935,6 @@
                 <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[10px] text-slate-400 uppercase font-bold">veya e-posta ile</span>
             </div>
 
-            <!-- Email/Password Auth Form -->
             <form id="email-auth-form" onsubmit="handleEmailAuth(event)" class="space-y-4">
                 <div id="fullname-field" class="hidden">
                     <label class="text-xs font-bold text-slate-700 block mb-1">Adınız Soyadınız:</label>
@@ -823,9 +944,20 @@
                     <label class="text-xs font-bold text-slate-700 block mb-1">E-Posta Adresiniz:</label>
                     <input type="email" id="auth-email" required placeholder="ornek@mail.com" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 block mb-1">Şifreniz:</label>
-                    <input type="password" id="auth-password" required placeholder="******" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                <div id="password-field-container">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-bold text-slate-700 block">Şifreniz:</label>
+                        <button type="button" onclick="handleForgotPassword()" class="text-[11px] font-bold text-cyan-600 hover:underline cursor-pointer">Şifremi Unuttum?</button>
+                    </div>
+                    <input type="password" id="auth-password" placeholder="******" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
+                </div>
+
+                <!-- BENİ HATIRLA ONAY KUTUSU -->
+                <div class="flex items-center justify-between text-xs py-1">
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600 font-semibold select-none">
+                        <input type="checkbox" id="remember-me-checkbox" checked class="w-4 h-4 accent-cyan-600 rounded cursor-pointer">
+                        <span>Beni Hatırla</span>
+                    </label>
                 </div>
 
                 <button type="submit" id="email-submit-btn" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer shadow-md shadow-cyan-600/20">
@@ -841,7 +973,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APP LOGIC & STATE MANAGEMENT -->
+    <!-- JAVASCRIPT APP LOGIC -->
     <script>
         let cart = [];
         let selectedRating = 5;
@@ -883,6 +1015,7 @@
                     }
                     updateUserUI();
                     fetchFirestoreReviews();
+                    fetchUserLiveOrder();
                 });
             }
         }
@@ -935,24 +1068,13 @@
                 section.classList.remove('active');
             });
 
-            const navIds = ['home', 'products', 'filament-lab', 'live-tracker', 'reviews-section', 'contact', 'about-us'];
-            navIds.forEach(id => {
-                const btn = document.getElementById('nav-' + id);
-                if (btn) {
-                    if (id === pageId) {
-                        btn.classList.add('text-cyan-600', 'border-cyan-600');
-                        btn.classList.remove('border-transparent');
-                    } else {
-                        btn.classList.remove('text-cyan-600', 'border-cyan-600');
-                        btn.classList.add('border-transparent');
-                    }
-                }
-            });
-
             const targetSection = document.getElementById('page-' + pageId);
             if (targetSection) {
                 targetSection.classList.add('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (pageId === 'live-tracker') {
+                    fetchUserLiveOrder();
+                }
             }
         }
 
@@ -961,8 +1083,8 @@
         }
 
         function getColorFee(colorName) {
-            const paidColors = ['Azur Mavisi', 'Kırmızı', 'Yeşil', 'Sarı', 'Koyu Mavi'];
-            return paidColors.includes(colorName) ? 15.00 : 0.00;
+            const paidColors = ['Turkuaz (750m)', 'Lacivert (600m)', 'Sarı (950m)', 'Kırmızı (900m)', 'Yeşil (850m)', 'Pembe (700m)', 'Kahverengi (650m)', 'Mor (750m)'];
+            return paidColors.some(c => colorName.includes(c)) ? 15.00 : 0.00;
         }
 
         function updateProductPrice(productId, basePrice) {
@@ -970,7 +1092,12 @@
             const selectedColor = selectElement.value;
             const fee = getColorFee(selectedColor);
             const totalPrice = basePrice + fee;
+            
             document.getElementById('price-' + productId).innerText = totalPrice.toFixed(2) + ' ₺';
+            const labelEl = document.getElementById('selected-color-label-' + productId);
+            if(labelEl) {
+                labelEl.innerText = `✔ Seçildi: ${selectedColor}`;
+            }
         }
 
         function addCustomProduct(productName, basePrice, textInputId, colorSelectId) {
@@ -1065,6 +1192,20 @@
             updateCartUI();
         }
 
+        async function generateOrderCode() {
+            try {
+                if (window.db && window.collection && window.getDocs) {
+                    const q = window.query(window.collection(window.db, "orders"));
+                    const querySnapshot = await window.getDocs(q);
+                    const count = querySnapshot.size + 1;
+                    return 'S' + String(count).padStart(3, '0');
+                }
+            } catch (err) {
+                console.error("Order code gen error: ", err);
+            }
+            return 'S' + Math.floor(100 + Math.random() * 900);
+        }
+
         async function checkout() {
             if (cart.length === 0) {
                 alert("Sepetiniz boş!");
@@ -1084,25 +1225,121 @@
 
             try {
                 if (window.db && window.collection && window.addDoc) {
+                    const orderCode = await generateOrderCode();
+
                     await window.addDoc(window.collection(window.db, "orders"), {
+                        orderCode: orderCode,
                         userId: currentUser.uid || null,
                         customerName: currentUser.fullname,
                         customerEmail: currentUser.email,
                         items: cart,
                         totalAmount: total.toFixed(2) + ' ₺',
-                        status: 'Yeni Sipariş (Baskı Bekliyor)',
+                        status: 'Sipariş Oluşturuldu / Beklemede',
                         createdAt: new Date()
                     });
 
-                    alert(`Harika ${currentUser.fullname}! Siparişiniz başarıyla alındı ve Bambu Lab A1 Mini basımı için sıraya eklendi.`);
+                    alert(`Harika ${currentUser.fullname}! Siparişiniz (${orderCode}) başarıyla alındı ve sıraya eklendi.`);
                     cart = [];
                     saveToLocalStorage();
                     updateCartUI();
                     closeCart();
+                    switchPage('live-tracker');
                 }
             } catch (err) {
                 console.error("Sipariş gönderme hatası: ", err);
                 alert("Sipariş iletilirken bir sorun oluştu. Lütfen tekrar deneyin!");
+            }
+        }
+
+        async function fetchUserLiveOrder() {
+            const box = document.getElementById('live-order-tracking-box');
+            if (!box) return;
+
+            if (!currentUser) {
+                box.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fa-solid fa-lock text-4xl text-slate-300 mb-3"></i>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">Giriş Yapılmadı</h4>
+                        <p class="text-xs text-slate-500 mb-4">Siparişlerinizi ve canlı kargo durumunuzu görebilmek için lütfen oturum açın.</p>
+                        <button onclick="openAuth()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow cursor-pointer">Giriş Yap</button>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                if (window.db && window.collection && window.getDocs) {
+                    const q = window.query(
+                        window.collection(window.db, "orders"),
+                        window.where("customerEmail", "==", currentUser.email),
+                        window.orderBy("createdAt", "desc"),
+                        window.limit(1)
+                    );
+
+                    const querySnapshot = await window.getDocs(q);
+
+                    if (querySnapshot.empty) {
+                        box.innerHTML = `
+                            <div class="text-center py-8">
+                                <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
+                                <h4 class="font-bold text-slate-800 text-sm mb-1">Henüz Aktif Siparişiniz Bulunmamaktadır</h4>
+                                <p class="text-xs text-slate-500 mb-4">Mağazamızdan hemen sipariş vererek canlı kargo sürecini buradan takip edebilirsiniz.</p>
+                                <button onclick="switchPage('products')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow cursor-pointer">Mağazayı Keşfet</button>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const order = querySnapshot.docs[0].data();
+                    const status = order.status || 'Sipariş Oluşturuldu / Beklemede';
+                    const orderCode = order.orderCode || 'S001';
+
+                    const steps = [
+                        { key: 'Sipariş Oluşturuldu / Beklemede', title: '1. Oluşturuldu', icon: 'fa-file-invoice' },
+                        { key: 'Sipariş Basılıyor', title: '2. Basılıyor', icon: 'fa-print' },
+                        { key: 'Sipariş Paketleniyor', title: '3. Paketleniyor', icon: 'fa-box-open' },
+                        { key: 'Sipariş Kargoda', title: '4. Kargoda', icon: 'fa-truck-fast' },
+                        { key: 'Sipariş Teslim Edildi', title: '5. Teslim Edildi', icon: 'fa-circle-check' }
+                    ];
+
+                    let currentStepIndex = steps.findIndex(s => s.key === status);
+                    if (currentStepIndex === -1) currentStepIndex = 0;
+
+                    let stepsHtml = '';
+                    steps.forEach((s, idx) => {
+                        let isCompleted = idx < currentStepIndex;
+                        let isCurrent = idx === currentStepIndex;
+
+                        let cardClass = "bg-white border-slate-200 text-slate-400";
+                        if (isCompleted) cardClass = "bg-emerald-50 border-emerald-200 text-emerald-700";
+                        if (isCurrent) cardClass = "bg-cyan-50 border-cyan-300 text-cyan-700 font-extrabold shadow-md animate-pulse";
+
+                        stepsHtml += `
+                            <div class="p-4 rounded-2xl border text-center transition ${cardClass}">
+                                <i class="fa-solid ${s.icon} text-2xl mb-2"></i>
+                                <h5 class="font-bold text-xs">${s.title}</h5>
+                            </div>
+                        `;
+                    });
+
+                    box.innerHTML = `
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 mb-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <span class="bg-cyan-100 text-cyan-800 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase">Sipariş Kodu: ${orderCode}</span>
+                                <h4 class="font-extrabold text-slate-800 text-base mt-2">${order.customerName} - ${order.totalAmount}</h4>
+                                <p class="text-xs text-slate-500">${order.items.length} Kalem Ürün | Canlı Statü: <strong class="text-cyan-600">${status}</strong></p>
+                            </div>
+                            <span class="text-xs font-semibold text-slate-400"><i class="fa-solid fa-clock mr-1"></i> ${new Date(order.createdAt?.seconds * 1000 || Date.now()).toLocaleDateString('tr-TR')}</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                            ${stepsHtml}
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Live order fetch error: ", err);
+                box.innerHTML = '<p class="text-xs text-slate-400 text-center py-8">Sipariş durumu yüklenirken bir hata oluştu.</p>';
             }
         }
 
@@ -1121,6 +1358,7 @@
                         localStorage.removeItem('3dstore_user');
                         updateUserUI();
                         fetchFirestoreReviews();
+                        fetchUserLiveOrder();
                     }
                 }
             } else {
@@ -1148,9 +1386,35 @@
             }
         }
 
+        async function handleForgotPassword() {
+            const email = document.getElementById('auth-email').value.trim();
+            if(!email) {
+                alert("Lütfen önce E-Posta Adresinizi giriniz!");
+                return;
+            }
+
+            try {
+                if(window.auth && window.sendPasswordResetEmail) {
+                    await window.sendPasswordResetEmail(window.auth, email);
+                    alert(`${email} adresine şifre sıfırlama bağlantısı gönderildi! Lütfen e-postanızı kontrol ediniz.`);
+                }
+            } catch (err) {
+                console.error("Password reset error: ", err);
+                if (err.code === 'auth/user-not-found') {
+                    alert("HATA: Bu e-posta adresine ait bir hesap bulunamadı! Lütfen kaydolun.");
+                } else {
+                    alert("Şifre sıfırlama e-postası gönderilirken hata oluştu: " + err.message);
+                }
+            }
+        }
+
         async function loginWithGoogle() {
             try {
                 if (window.auth && window.googleProvider && window.signInWithPopup) {
+                    const rememberMe = document.getElementById('remember-me-checkbox').checked;
+                    const persistenceType = rememberMe ? window.browserLocalPersistence : window.browserSessionPersistence;
+                    
+                    await window.setPersistence(window.auth, persistenceType);
                     const result = await window.signInWithPopup(window.auth, window.googleProvider);
                     const user = result.user;
                     currentUser = {
@@ -1163,6 +1427,7 @@
                     updateUserUI();
                     closeAuth();
                     fetchFirestoreReviews();
+                    fetchUserLiveOrder();
                     alert(`Hoş geldin ${currentUser.fullname}! Google hesabı ile giriş yapıldı.`);
                 }
             } catch (err) {
@@ -1176,8 +1441,14 @@
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const fullname = document.getElementById('auth-fullname').value;
+            const rememberMe = document.getElementById('remember-me-checkbox').checked;
 
             try {
+                if (window.auth && window.setPersistence) {
+                    const persistenceType = rememberMe ? window.browserLocalPersistence : window.browserSessionPersistence;
+                    await window.setPersistence(window.auth, persistenceType);
+                }
+
                 if (isSignUpMode) {
                     if (window.auth && window.createUserWithEmailAndPassword) {
                         const userCred = await window.createUserWithEmailAndPassword(window.auth, email, password);
@@ -1204,9 +1475,16 @@
                 updateUserUI();
                 closeAuth();
                 fetchFirestoreReviews();
+                fetchUserLiveOrder();
             } catch (err) {
                 console.error("Auth hatası: ", err);
-                alert("İşlem sırasında hata oluştu: " + err.message);
+                if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+                    alert("HATA: Bu e-posta adresine ait bir hesap veritabanımızda bulunamadı! Lütfen bilgilerinizi kontrol edin veya yeni bir hesap oluşturun.");
+                } else if (err.code === 'auth/wrong-password') {
+                    alert("HATA: Girdiğiniz şifre hatalı! Lütfen tekrar deneyin veya Şifremi Unuttum seçeneğini kullanın.");
+                } else {
+                    alert("Giriş işlemi sırasında hata oluştu: " + err.message);
+                }
             }
         }
 
@@ -1456,7 +1734,7 @@
             input.value = '';
 
             setTimeout(() => {
-                let reply = "Selam! FiloBot AI v16.1 aktif! Sorduğun soruyu tam anlayamadım ama mağaza ürünleri, renk seçenekleri, fiyatlar veya kargo hakkında ne zaman istersen sorabilirsin.";
+                let reply = "Selam! FiloBot AI v16.4 aktif! Sorduğun soruyu tam anlayamadım ama mağaza ürünleri, renk seçenekleri, fiyatlar veya kargo hakkında ne zaman istersen sorabilirsin.";
 
                 if (text.includes('gram') || text.includes('ağırlık') || text.includes('kilo')) {
                     if (text.includes('plaka') || text.includes('anahtarlık')) {
@@ -1465,41 +1743,31 @@
                         reply = "Fidget Yıldız modelimiz 4 gram ağırlığındadır.";
                     } else if (text.includes('kalp')) {
                         reply = "Fidget Kalp modelimiz 6 gram ağırlığındadır.";
+                    } else if (text.includes('ahtapot')) {
+                        reply = "Fidget Ahtapot modelimiz 12 gram ağırlığındadır.";
+                    } else if (text.includes('dumpling') || text.includes('mantı')) {
+                        reply = "Fidget Dumpling modelimiz 10 gram ağırlığındadır.";
                     } else {
-                        reply = "Modellerimizin ağırlıkları: Özel Plaka Anahtarlık 8g, Fidget Kalp 6g, Fidget Yıldız ise 4g ağırlığındadır.";
+                        reply = "Modellerimizin ağırlıkları: Özel Plaka Anahtarlık 8g, Fidget Kalp 6g, Fidget Yıldız 4g, Fidget Dumpling 10g, Fidget Ahtapot 12g ağırlığındadır.";
                     }
                 } 
                 else if (text.includes('renkler kaç') || text.includes('renk fiyatı') || text.includes('renk farkı') || text.includes('ücretli mi')) {
-                    reply = "Siyah, Beyaz ve Gri renklerimiz standart ve ücretsizdir dostum. Kırmızı, Yeşil, Sarı, Azur Mavisi ve Koyu Mavi renklerimiz ise +15 ₺ farkla sunulmaktadır.";
+                    reply = "Gri (800m), Beyaz (800m) ve Siyah (800m) renklerimiz standart ve ücretsizdir dostum. Turkuaz, Lacivert, Sarı, Kırmızı, Yeşil, Pembe, Kahverengi ve Mor renklerimiz ise +15 ₺ farkla sunulmaktadır.";
                 } else if (text.includes('renk') || text.includes('hangi renk')) {
-                    reply = "Mevcut renk seçeneklerimiz: Beyaz, Siyah, Gri, Azur Mavisi, Kırmızı, Yeşil, Sarı ve Koyu Mavi polimerleridir.";
+                    reply = "Mevcut renk seçeneklerimiz: Gri, Beyaz, Siyah, Turkuaz, Lacivert, Sarı, Kırmızı, Yeşil, Pembe, Kahverengi ve Mor Beta Filament polimerleridir.";
                 } 
                 else if (text.includes('fiyat') || text.includes('kaç para') || text.includes('ücret') || text.includes('maliyet')) {
-                    reply = "Süper soru! Tüm temel modellerimizin başlangıç fiyatı standart renklerle tam 49.99 ₺'dir.";
+                    reply = "Plaka Anahtarlık, Fidget Yıldız ve Fidget Kalp 49.99 ₺'dir. Fidget Ahtapot ve Fidget Dumpling modellerimiz ise 99.00 ₺'dir.";
                 }
                 else if (text.includes('süre') || text.includes('dakika') || text.includes('kaç dk') || text.includes('zaman')) {
-                    if (text.includes('plaka')) {
-                        reply = "Özel Plaka Anahtarlık modelimizin basımı yaklaşık 35 dakika sürmektedir.";
-                    } else if (text.includes('yıldız')) {
-                        reply = "Fidget Yıldız modelimizin basımı yaklaşık 20 dakika sürmektedir.";
-                    } else if (text.includes('kalp')) {
-                        reply = "Fidget Kalp modelimizin basımı yaklaşık 28 dakika sürmektedir.";
-                    } else {
-                        reply = "Yazıcı basım sürelerimiz: Fidget Yıldız ~20 dk, Fidget Kalp ~28 dk, Plaka Anahtarlık ise ~35 dk sürmektedir.";
-                    }
+                    reply = "Yazıcı basım sürelerimiz ortalama 20-35 dakika arasında değişmektedir.";
                 }
-                else if (text.includes('yazıcı') || text.includes('bambu') || text.includes('makine') || text.includes('parkur')) {
+                else if (text.includes('yazıcı') || text.includes('bambu') || text.includes('makine')) {
                     reply = "Üretim hattımızda yüksek hassasiyetli Bambu Lab A1 Mini 3D yazıcıları kullanılmaktadır.";
-                } else if (text.includes('filament') || text.includes('plastik') || text.includes('pla') || text.includes('kalite')) {
+                } else if (text.includes('filament') || text.includes('plastik') || text.includes('pla')) {
                     reply = "Tüm baskılarımızda yüksek mukavemetli ve kaliteli Beta Filament PLA hammaddesi kullanılmaktadır.";
                 }
-                else if (text.includes('iletişim') || text.includes('mail') || text.includes('eposta') || text.includes('ulaş')) {
-                    reply = "Bize 3dstore.resmi@gmail.com e-posta adresimizden doğrudan mesaj atabilir veya sitemizdeki İletişim formunu kullanabilirsin.";
-                }
-                else if (text.includes('kargo') || text.includes('teslimat') || text.includes('nasıl gelecek')) {
-                    reply = "Siparişleriniz akşam basıldıktan sonra özenle paketlenip teslimata çıkarılır. 200 ₺ üzeri siparişlerde kargo ücretsizdir.";
-                }
-                else if (text.includes('merhaba') || text.includes('selam') || text.includes('nasılsın') || text.includes('saol')) {
+                else if (text.includes('merhaba') || text.includes('selam') || text.includes('nasılsın')) {
                     reply = "Selam dostum! Ben 3D Store akıllı asistanı FiloBot AI. Modellerimiz hakkında aklına takılan her şeyi sorabilirsin!";
                 }
 
@@ -1508,26 +1776,6 @@
                 
                 speakText(reply);
             }, 500);
-        }
-
-        function simulateOrder() {
-            const steps = ['step-1', 'step-2', 'step-3', 'step-4'];
-            let current = 0;
-            steps.forEach(s => {
-                document.getElementById(s).className = "p-5 rounded-2xl bg-white border border-slate-200 text-slate-400 transition shadow-sm";
-            });
-
-            const interval = setInterval(() => {
-                if (current > 0) {
-                    document.getElementById(steps[current - 1]).className = "p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 transition";
-                }
-                if (current < steps.length) {
-                    document.getElementById(steps[current]).className = "p-5 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-700 transition animate-pulse";
-                    current++;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 1000);
         }
     </script>
 </body>
