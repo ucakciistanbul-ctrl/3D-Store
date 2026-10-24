@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Store by Bambu Lab and Beta Filament Versiyon 16.4</title>
+    <title>3D Store by Bambu Lab and Beta Filament Versiyon 16.5</title>
     
-    <!-- FAVICON (Site Logosunu Google & Sekmelerde Gösterme) -->
+    <!-- FAVICON (Google ve Arama Sonuçlarında Görünecek Küçük Logo) -->
     <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
@@ -147,15 +147,17 @@
     <div id="intro-overlay" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center text-white transition-all duration-1000 cursor-pointer overflow-hidden" onclick="dismissIntro()">
         <div class="absolute inset-0 bg-cyan-500/10 rounded-full filter blur-3xl animate-pulse"></div>
         <div id="intro-logo-content" class="relative z-10 text-center p-8 transition-transform duration-700">
-            <div class="w-28 h-28 mx-auto mb-6 rounded-3xl bg-slate-900 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-5xl font-bold shadow-2xl animate-bounce overflow-hidden">
-                <img src="logo.png" alt="3D Store Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-print text-cyan-400\"></i>';">
+            <div class="w-24 h-24 mx-auto mb-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-5xl font-extrabold shadow-2xl animate-bounce">
+                <i class="fa-solid fa-print"></i>
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent mb-3">3D Store</h1>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-3">
+                <span class="text-white">3</span><span class="text-cyan-400">D</span> <span class="text-white">Store</span>
+            </h1>
             <p class="text-sm md:text-base text-slate-400 font-medium tracking-widest uppercase">by Bambu Lab & Beta Filament</p>
             <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
-                <span>Versiyon 16.4</span>
+                <span>Versiyon 16.5</span>
             </div>
-            <p class="text-xs text-cyan-400/80 mt-8 animate-pulse"><i class="fa-solid fa-sparkles mr-1"></i> Beni Hatırla Seçeneği & Şifre Sıfırlama Altyapısıyla Açılıyor...</p>
+            <p class="text-xs text-cyan-400/80 mt-8 animate-pulse"><i class="fa-solid fa-sparkles mr-1"></i> Başlatılıyor...</p>
         </div>
         <div id="ripple-circle" class="absolute rounded-full bg-cyan-400/40 pointer-events-none transition-all duration-1000 transform scale-0 left-1/2 top-1/2"></div>
     </div>
@@ -163,7 +165,7 @@
     <!-- TOP ANNOUNCEMENT HEADER BAR -->
     <div class="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 text-xs py-2.5 px-4 text-center font-medium tracking-wide text-white flex justify-center items-center gap-2 shadow-md">
         <i class="fa-solid fa-cube animate-spin"></i> 
-        <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla <strong>Versiyon 16.4</strong> Kurumsal Sürüm Yayında!</span>
+        <span>Bambu Lab A1 Mini & Beta Filament Altyapısıyla <strong>Versiyon 16.5</strong> Yayında!</span>
     </div>
 
     <!-- NAVIGATION BAR -->
@@ -174,12 +176,15 @@
                 <span class="text-xs font-extrabold uppercase tracking-wider hidden sm:inline-block">Menü</span>
             </button>
             <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('home')">
-                <div class="w-10 h-10 rounded-2xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-xl font-bold shadow-sm overflow-hidden">
-                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-print text-cyan-500\"></i>';">
+                <div class="w-10 h-10 rounded-2xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl font-bold shadow-sm">
+                    <i class="fa-solid fa-print"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">3D Store</h1>
-                    <p class="text-[9px] sm:text-[10px] text-slate-500 font-bold tracking-widest uppercase">Versiyon 16.4</p>
+                    <!-- DÜZ METİN YAZI LOGO (Sitede Hizalama Sorunsuz) -->
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight leading-none text-slate-900">
+                        <span>3</span><span class="text-cyan-600">D</span> <span class="text-slate-800">Store</span>
+                    </h1>
+                    <p class="text-[9px] sm:text-[10px] text-slate-500 font-bold tracking-widest uppercase mt-0.5">Versiyon 16.5</p>
                 </div>
             </div>
         </div>
@@ -210,8 +215,8 @@
             <div>
                 <div class="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-base font-bold overflow-hidden">
-                            <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-bars-staggered text-cyan-500\"></i>';">
+                        <div class="w-9 h-9 rounded-xl bg-slate-900 text-cyan-400 flex items-center justify-center text-base font-bold">
+                            <i class="fa-solid fa-bars-staggered"></i>
                         </div>
                         <h3 class="font-extrabold text-base text-slate-800">Gezinti Menüsü</h3>
                     </div>
@@ -242,7 +247,7 @@
                 </div>
             </div>
             <div class="pt-6 border-t border-slate-100 text-[11px] text-slate-400 text-center space-y-1">
-                <p class="font-bold text-slate-600">3D Store Versiyon 16.4</p>
+                <p class="font-bold text-slate-600">3D Store Versiyon 16.5</p>
                 <p>Bambu Lab & Beta Filament</p>
             </div>
         </div>
@@ -256,7 +261,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-4 sm:py-8">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-600 text-xs font-bold mb-6">
-                        <i class="fa-solid fa-sparkles text-cyan-500"></i> Versiyon 16.4 (Geliştirilmiş Kurumsal Yapı)
+                        <i class="fa-solid fa-sparkles text-cyan-500"></i> Versiyon 16.5
                     </div>
                     <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6 text-slate-900">
                         Özel Tasarım <br>
@@ -286,8 +291,8 @@
                     </div>
 
                     <div class="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-6 sm:p-8 border border-slate-100 text-center mb-6 shadow-sm">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-600 text-3xl sm:text-4xl shadow overflow-hidden">
-                            <img src="logo.png" alt="3D Store Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\"fa-solid fa-print text-cyan-500\"></i>';">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-slate-900 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-3xl sm:text-4xl shadow">
+                            <i class="fa-solid fa-print"></i>
                         </div>
                         <h3 class="font-extrabold text-lg sm:text-xl mb-2 text-slate-800">Bambu Lab A1 Mini Mimarisi</h3>
                         <p class="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
@@ -831,7 +836,7 @@
 
     <!-- FOOTER SECTION -->
     <footer class="border-t border-slate-200 px-6 py-8 max-w-7xl mx-auto w-full text-center text-xs text-slate-500 mt-auto space-y-2">
-        <p>&copy; 2025-2026 <strong>3D Store by Bambu Lab & Beta Filament</strong>. Tüm hakları saklıdır. Versiyon 16.4.</p>
+        <p>&copy; 2025-2026 <strong>3D Store by Bambu Lab & Beta Filament</strong>. Tüm hakları saklıdır. Versiyon 16.5.</p>
         <p class="text-[11px] text-slate-400">İletişim: <a href="mailto:3dstore.resmi@gmail.com" class="underline hover:text-cyan-600">3dstore.resmi@gmail.com</a></p>
         
         <div class="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full text-[10px] text-slate-600 font-bold mt-2">
@@ -852,7 +857,7 @@
                     <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
                     <div>
                         <h5 class="font-extrabold text-xs text-slate-800">FiloBot AI</h5>
-                        <p class="text-[9px] text-slate-400 font-semibold">v16.4 Akıllı Asistan</p>
+                        <p class="text-[9px] text-slate-400 font-semibold">v16.5 Akıllı Asistan</p>
                     </div>
                 </div>
                 <button onclick="toggleChatbot()" class="text-slate-400 hover:text-slate-800 cursor-pointer w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-xmark"></i></button>
@@ -912,7 +917,7 @@
         </div>
     </div>
 
-    <!-- USER AUTHENTICATION MODAL (Giriş / Kayıt / Şifremi Unuttum) -->
+    <!-- USER AUTHENTICATION MODAL -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="light-panel w-full max-w-md p-8 rounded-3xl relative shadow-2xl border border-slate-200">
             <button onclick="closeAuth()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 cursor-pointer w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -952,7 +957,6 @@
                     <input type="password" id="auth-password" placeholder="******" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-500 shadow-sm">
                 </div>
 
-                <!-- BENİ HATIRLA ONAY KUTUSU -->
                 <div class="flex items-center justify-between text-xs py-1">
                     <label class="flex items-center gap-2 cursor-pointer text-slate-600 font-semibold select-none">
                         <input type="checkbox" id="remember-me-checkbox" checked class="w-4 h-4 accent-cyan-600 rounded cursor-pointer">
@@ -1734,7 +1738,7 @@
             input.value = '';
 
             setTimeout(() => {
-                let reply = "Selam! FiloBot AI v16.4 aktif! Sorduğun soruyu tam anlayamadım ama mağaza ürünleri, renk seçenekleri, fiyatlar veya kargo hakkında ne zaman istersen sorabilirsin.";
+                let reply = "Selam! FiloBot AI v16.5 aktif! Sorduğun soruyu tam anlayamadım ama mağaza ürünleri, renk seçenekleri, fiyatlar veya kargo hakkında ne zaman istersen sorabilirsin.";
 
                 if (text.includes('gram') || text.includes('ağırlık') || text.includes('kilo')) {
                     if (text.includes('plaka') || text.includes('anahtarlık')) {
